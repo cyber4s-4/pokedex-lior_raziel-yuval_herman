@@ -14,7 +14,7 @@ export class Pokemon implements Component {
 		const containerDiv = document.createElement("div");
 		containerDiv.classList.add("pokemon-component");
 		containerDiv.innerHTML = ` <div class="flex-right">
-        <img src="${this.img}" alt="A ${this.name} image">
+        <img class="pokemon-image" src="${this.img}" alt="A ${this.name} image">
         <div class="flex-down">
         <h1 class="pokemon-name"> ${this.name}</h1>
         <div class="flex-down">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptates perspiciatis</div>
