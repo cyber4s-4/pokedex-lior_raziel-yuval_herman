@@ -26,7 +26,9 @@ export class Pokemon implements Component {
 		const containerDiv = document.createElement("div");
 		containerDiv.classList.add("pokemon-component");
 		containerDiv.innerHTML = ` <div class="flex-right">
-            <img class="pokemon-image" src="${this.img}" alt="A ${this.name} image">
+            <img class="pokemon-image" src="${this.img}" alt="${
+			this.img ? `A ${this.name} image` : "No image found"
+		}">
             <div class="flex-down">
             <h1 class="pokemon-name"> ${this.name}</h1>
             <div class="stats-div flex-down"></div>
@@ -42,10 +44,3 @@ export class Pokemon implements Component {
 		return containerDiv;
 	}
 }
-// for (let j = 0; j < stats.length; j++) {
-// 	const baseStat = stats[j].base_stat;
-// 	const effort = stats[j].effort;
-// 	const statName = stats[j].stat.name;
-
-// 	this.stats += `${statName} is ${baseStat} at ${effort} effort`
-// }
