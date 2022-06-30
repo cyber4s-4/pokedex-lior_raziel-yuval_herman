@@ -1,8 +1,13 @@
 $pokemonComponentBackground: #2ad4ffff;
+$complementaryColor: #ff5555ff;
 
 .flex-right {
 	display: flex;
 	flex-direction: row;
+}
+
+body {
+	margin: 0;
 }
 
 .flex-down {
@@ -16,50 +21,90 @@ $pokemonComponentBackground: #2ad4ffff;
 	padding: 1rem;
 }
 
+.header {
+	position: relative;
+	height: 15rem;
+	background-color: $complementaryColor;
+	margin: 0;
+	margin-bottom: 10rem;
+	.pokeball-image {
+		position: absolute;
+		top: 10%;
+		left: 1%;
+		width: 15%;
+	}
+	.pokemon-logo {
+		position: absolute;
+		top: 1%;
+		left: 30%;
+		height: 100%;
+	}
+	.navbar {
+		@extend .flex-down;
+		float: inline-end;
+		justify-content: center;
+		height: 100%;
+		margin-right: 4rem;
+		gap: 1rem;
+		.nav-link {
+			margin: 1rem;
+			padding: 0.2rem;
+			font-size: 1.5rem;
+			text-decoration: none;
+			color: black;
+			background-color: darken($complementaryColor, 20);
+			border: solid black 1px;
+			border-radius: 0.5rem;
+			text-transform: capitalize;
+		}
+	}
+}
+
 .main-container {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-}
 
-.pokemon-list {
-	@extend .flex-right;
-	flex-wrap: wrap;
-	justify-content: center;
-}
+	.pokemon-list {
+		@extend .flex-right;
+		flex-wrap: wrap;
+		justify-content: center;
 
-.pokemon-component {
-	@extend .flex-down;
-	gap: 1rem;
-	background-color: $pokemonComponentBackground;
-	border: solid darken($color: $pokemonComponentBackground, $amount: 20) 1.5rem;
-	border-radius: 2rem;
-	padding: 1rem;
-	margin: 2rem;
-	flex: 0 1 20rem;
-	font-size: small;
-	.flex-right {
-		gap: 1.5rem;
-		.pokemon-image {
-			width: 7rem;
-		}
-		.flex-down {
-			.pokemon-name {
-				text-align: center;
-				text-transform: capitalize;
-				background-color: #ff5555ff;
-				border-radius: 5px;
-				text-shadow: 1px 2px 3px rgb(93, 93, 93);
-				width: 15rem;
+		.pokemon-component {
+			@extend .flex-down;
+			gap: 1rem;
+			background-color: $pokemonComponentBackground;
+			border: solid darken($color: $pokemonComponentBackground, $amount: 20)
+				1.5rem;
+			border-radius: 2rem;
+			padding: 1rem;
+			margin: 2rem;
+			flex: 0 1 20rem;
+			font-size: small;
+			.flex-right {
+				gap: 1.5rem;
+				.pokemon-image {
+					width: 7rem;
+				}
+				.flex-down {
+					.pokemon-name {
+						text-align: center;
+						text-transform: capitalize;
+						background-color: $complementaryColor;
+						border-radius: 5px;
+						text-shadow: 1px 2px 3px rgb(93, 93, 93);
+						width: 15rem;
+					}
+					.flex-down {
+						@extend .text-box;
+					}
+				}
 			}
-			.flex-down {
+			.pokemon-description {
 				@extend .text-box;
+				padding: 0.5rem 1rem;
+				margin-bottom: 0;
 			}
 		}
-	}
-	.pokemon-description {
-		@extend .text-box;
-		padding: 0.5rem 1rem;
-		margin-bottom: 0;
 	}
 }
