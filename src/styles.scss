@@ -1,43 +1,48 @@
 $pokemonComponentBackground: #2ad4ffff;
 
-.pokemon-component {
+.flex-right {
+	display: flex;
+	flex-direction: row;
+}
+
+.flex-down {
 	display: flex;
 	flex-direction: column;
+}
+
+.text-box {
+	background-color: darken($color: $pokemonComponentBackground, $amount: 20);
+	border-radius: 1rem;
+	padding: 1rem;
+}
+
+.pokemon-component {
+	@extend .flex-down;
 	gap: 1rem;
 	width: 20rem;
 	background-color: $pokemonComponentBackground;
-	border: solid darken($color: $pokemonComponentBackground, $amount: 20) 1rem;
+	border: solid darken($color: $pokemonComponentBackground, $amount: 20) 1.5rem;
 	border-radius: 2rem;
 	padding: 1rem;
+	font-size: small;
 	.flex-right {
-		display: flex;
-		flex-direction: row;
-		gap: 15px;
+		gap: 1.5rem;
 		.flex-down {
-			display: flex;
-			flex-direction: column;
 			.pokemon-name {
 				text-align: center;
 				text-transform: capitalize;
-				color: #ff5555ff;
-				text-shadow: 2px 2px 5px gray;
+				background-color: #ff5555ff;
+				border-radius: 5px;
+				text-shadow: 1px 2px 3px rgb(93, 93, 93);
 			}
 			.flex-down {
-				background-color: darken(
-					$color: $pokemonComponentBackground,
-					$amount: 20
-				);
-				border-radius: 1rem;
-				padding: 1rem;
+				@extend .text-box;
 			}
 		}
 	}
 	.pokemon-description {
-		background-color: darken(
-			$color: $pokemonComponentBackground,
-			$amount: 20
-		);
-		border-radius: 1rem;
-		padding: 0.5rem;
+		@extend .text-box;
+		padding: 0.5rem 1rem;
+		margin-bottom: 0;
 	}
 }
