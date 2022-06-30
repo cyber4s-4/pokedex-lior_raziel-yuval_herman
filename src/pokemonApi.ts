@@ -6,10 +6,22 @@ export async function fetchJson(url: string) {
 	return await (await fetch(url)).json();
 }
 
-export async function getPokemonList(offset: number = 0, limit: number = 20) {
-	const pokemonList = (
+export async function getPokemonNameList(
+	offset: number = 0,
+	limit: number = 20
+) {
+	return (
 		await fetchJson(`${baseUrl}pokemon/?limit=${limit}&offset=${offset}`)
 	).results;
+}
+
+export async function getPokemonComponents(
+	offset: number = 0,
+	limit: number = 20,
+	pokemonNameList: null | any[] = null
+) {
+	const pokemonList =
+		pokemonNameList ?? (await getPokemonNameList(offset, limit));
 	for (let i = 0; i < pokemonList.length; i++) {
 		const name = pokemonList[i].name;
 		const pokemonData = await fetchJson(pokemonList[i].url);
@@ -28,3 +40,6 @@ export async function getPokemonList(offset: number = 0, limit: number = 20) {
 
 	return pokemonList;
 }
+
+const promise = getPokemonNameList(0, 99999);
+export const getPokemonNames = promise.then.bind(promise);
