@@ -1,3 +1,4 @@
+import { Component } from "./components/component";
 import { Pokemon } from "./components/pokemon";
 
 const pokemon = new Pokemon(
@@ -14,4 +15,14 @@ fetch(baseUrl + "pokemon")
 	.then((data) => {
 		pokemonList.push(...data.results);
 	});
-document.body.appendChild(pokemon.createHtml());
+
+function renderComponentList(components: Component[], listParent: HTMLElement) {
+	for (const component of components) {
+		listParent.appendChild(component.createHtml());
+	}
+}
+
+renderComponentList(
+	[pokemon, pokemon, pokemon, pokemon, pokemon],
+	document.getElementsByClassName("pokemon-list")[0] as HTMLElement
+);
