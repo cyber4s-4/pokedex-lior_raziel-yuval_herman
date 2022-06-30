@@ -111,6 +111,7 @@ body {
 				gap: 1.5rem;
 				.pokemon-image {
 					width: 7rem;
+					object-fit: scale-down;
 				}
 				.flex-down {
 					.pokemon-name {
