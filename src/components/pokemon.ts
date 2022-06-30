@@ -20,19 +20,19 @@ export class Pokemon implements Component {
 
 	createHtml(): HTMLElement {
 		const stats = this.stats.map((element: any) => {
-			return `${element.stat.name} is ${element.base_stat} at ${element.effort} effort`;
+			return `<strong>${element.stat.name}</strong> is ${element.base_stat} at ${element.effort} effort`;
 		});
 
 		const containerDiv = document.createElement("div");
 		containerDiv.classList.add("pokemon-component");
 		containerDiv.innerHTML = ` <div class="flex-right">
-	<img class="pokemon-image" src="${this.img}" alt="A ${this.name} image">
-	<div class="flex-down">
-	<h1 class="pokemon-name"> ${this.name}</h1>
-	<div class="stats-div" class="flex-down"></div>
-	</div>
-	</div>
-	<p class="pokemon-description">${this.description}</p>`;
+            <img class="pokemon-image" src="${this.img}" alt="A ${this.name} image">
+            <div class="flex-down">
+            <h1 class="pokemon-name"> ${this.name}</h1>
+            <div class="stats-div flex-down"></div>
+            </div>
+            </div>
+            <p class="pokemon-description">${this.description}</p>`;
 
 		for (let i = 0; i < stats.length; i++) {
 			const statsParagraph = document.createElement("p");

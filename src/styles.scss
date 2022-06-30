@@ -121,8 +121,13 @@ body {
 						text-shadow: 1px 2px 3px rgb(93, 93, 93);
 						width: 15rem;
 					}
-					.flex-down {
+					.stats-div {
 						@extend .text-box;
+						gap: 0.5rem;
+						p {
+							text-transform: capitalize;
+							margin: 0;
+						}
 					}
 				}
 			}
