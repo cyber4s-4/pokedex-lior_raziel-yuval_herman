@@ -12,4 +12,5 @@ fetch(baseUrl + "pokemon")
 		const body = document.body;
 		pokemonList.push(...data.results);
 	});
-document.body.innerText = pokemon.name;
+document.body.appendChild(pokemon.createHtml());
+
