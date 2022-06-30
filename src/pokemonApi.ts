@@ -15,6 +15,10 @@ export async function getPokemonNameList(
 	).results;
 }
 
+function resolveImage(spritesObj: any): string {
+	return spritesObj.other.dream_world.front_default; // || "No image found";
+}
+
 export async function getPokemonComponents(
 	offset: number = 0,
 	limit: number = 20,
@@ -30,7 +34,7 @@ export async function getPokemonComponents(
 
 		pokemonList[i] = new Pokemon(
 			name,
-			pokemonData.sprites.other.dream_world.front_default,
+			resolveImage(pokemonData.sprites),
 			species.flavor_text_entries.find(
 				(element: any) => element.language.name === "en"
 			).flavor_text,
