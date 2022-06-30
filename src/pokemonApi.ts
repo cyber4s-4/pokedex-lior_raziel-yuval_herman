@@ -16,7 +16,11 @@ export async function getPokemonNameList(
 }
 
 function resolveImage(spritesObj: any): string {
-	return spritesObj.other.dream_world.front_default; // || "No image found";
+	return (
+		spritesObj.other.dream_world.front_default ||
+		spritesObj.other["official-artwork"].front_default ||
+		spritesObj.front_default
+	);
 }
 
 export async function getPokemonComponents(
