@@ -52,11 +52,37 @@ body {
 			font-size: 1.5rem;
 			text-decoration: none;
 			color: black;
-			background-color: darken($complementaryColor, 20);
+			background-color: red;
 			border: solid black 1px;
 			border-radius: 0.5rem;
 			text-transform: capitalize;
 		}
+	}
+}
+
+.search-bar {
+	@extend .flex-down;
+	position: relative;
+	align-items: center;
+	justify-content: center;
+	.search-input,
+	.search-button {
+		font-size: larger;
+		border: solid black;
+		border-radius: 1rem;
+	}
+	.search-input {
+		width: 30rem;
+		padding: 1rem;
+	}
+	.search-button {
+		position: absolute;
+		right: 0;
+		font-weight: 900;
+		border-top-left-radius: 0;
+		border-bottom-left-radius: 0;
+		background-color: red;
+		padding: 1rem;
 	}
 }
 
