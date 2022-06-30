@@ -1,20 +1,33 @@
 import { Component } from "./components/component";
 import { Pokemon } from "./components/pokemon";
 
-const pokemon = new Pokemon(
-	"pikachu",
-	"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg",
-	"hashmali"
-);
 const baseUrl = "https://pokeapi.co/api/v2/";
 
-const pokemonList = [];
+async function fetchJson(url: string) {
+	return await (await fetch(url)).json();
+}
 
-fetch(baseUrl + "pokemon")
-	.then((response) => response.json())
-	.then((data) => {
-		pokemonList.push(...data.results);
-	});
+async function getPokemonList() {
+	const pokemonList = (await fetchJson(baseUrl + "pokemon")).results;
+	for (let i = 0; i < pokemonList.length; i++) {
+		const name = pokemonList[i].name;
+		const pokemonData = await fetchJson(pokemonList[i].url);
+		const species = await fetchJson(pokemonData.species.url);
+		pokemonList[i] = new Pokemon(
+			name,
+			pokemonData.sprites.other.dream_world.front_default,
+			species.flavor_text_entries.find(
+				(element: any) => element.language.name === "en"
+			).flavor_text
+		);
+	}
+	console.log(pokemonList);
+
+	renderComponentList(
+		pokemonList,
+		document.getElementsByClassName("pokemon-list")[0] as HTMLElement
+	);
+}
 
 function renderComponentList(components: Component[], listParent: HTMLElement) {
 	for (const component of components) {
@@ -22,7 +35,4 @@ function renderComponentList(components: Component[], listParent: HTMLElement) {
 	}
 }
 
-renderComponentList(
-	[pokemon, pokemon, pokemon, pokemon, pokemon],
-	document.getElementsByClassName("pokemon-list")[0] as HTMLElement
-);
+getPokemonList();
