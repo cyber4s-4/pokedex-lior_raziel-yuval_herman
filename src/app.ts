@@ -13,15 +13,21 @@ async function getPokemonList() {
 		const name = pokemonList[i].name;
 		const pokemonData = await fetchJson(pokemonList[i].url);
 		const species = await fetchJson(pokemonData.species.url);
+		// console.log(species);
+		
+		const stats = pokemonData.stats;
+		
+
 		pokemonList[i] = new Pokemon(
 			name,
 			pokemonData.sprites.other.dream_world.front_default,
 			species.flavor_text_entries.find(
 				(element: any) => element.language.name === "en"
-			).flavor_text
+			).flavor_text,
+			stats
 		);
+		
 	}
-	console.log(pokemonList);
 
 	renderComponentList(
 		pokemonList,
