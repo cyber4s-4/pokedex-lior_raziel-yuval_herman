@@ -40,6 +40,9 @@ $pokemonComponentBackground: #2ad4ffff;
 	font-size: small;
 	.flex-right {
 		gap: 1.5rem;
+		.pokemon-image {
+			width: 7rem;
+		}
 		.flex-down {
 			.pokemon-name {
 				text-align: center;
@@ -47,6 +50,7 @@ $pokemonComponentBackground: #2ad4ffff;
 				background-color: #ff5555ff;
 				border-radius: 5px;
 				text-shadow: 1px 2px 3px rgb(93, 93, 93);
+				width: 15rem;
 			}
 			.flex-down {
 				@extend .text-box;
