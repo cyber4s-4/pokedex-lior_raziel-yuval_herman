@@ -15,7 +15,6 @@ export class Pokemon implements Component {
 		this.img = img;
 		this.description = description;
 		this.stats = stats;
-		// console.log(this.stats);
 	}
 
 	createHtml(): HTMLElement {
