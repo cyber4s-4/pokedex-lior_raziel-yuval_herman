@@ -1,5 +1,5 @@
 import { Component } from "./components/component";
-import { getPokemonComponents, getPokemonNames } from "./pokemonApi";
+import { getPokemonComponents, PokemonNamesPromise } from "./pokemonApi";
 
 function renderPromiseComponentList(
 	promises: Promise<Component>[],
@@ -27,7 +27,7 @@ searchButtonElement.addEventListener("click", (e) => {
 	const searchQuery = (
 		(e.target as HTMLElement).previousSibling as HTMLInputElement
 	).value;
-	getPokemonNames((pokemons) => {
+	PokemonNamesPromise((pokemons) => {
 		getPokemonComponents(
 			0,
 			0,
@@ -46,7 +46,7 @@ const searchInputElement = document.querySelector(
 ) as HTMLInputElement;
 searchInputElement.addEventListener("input", (e) => {
 	const searchQuery = (e.target as HTMLInputElement).value;
-	getPokemonNames((pokemons) => {
+	PokemonNamesPromise((pokemons) => {
 		getPokemonComponents(
 			0,
 			0,
@@ -63,7 +63,7 @@ searchInputElement.addEventListener("keydown", (e) => {
 	if (e.key === "Enter") searchButtonElement.click();
 });
 
-getPokemonNames((pokemonNames) => {
+PokemonNamesPromise((pokemonNames) => {
 	const dataListElement = document.querySelector(
 		"#pokemon-names"
 	) as HTMLElement;

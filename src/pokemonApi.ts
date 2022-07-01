@@ -45,7 +45,7 @@ export async function getPokemonComponents(
 	pokemonNameList: null | any[] = null
 ) {
 	const pokemonList =
-		pokemonNameList ?? (await getPokemonNames()).slice(offset, limit);
+		pokemonNameList ?? (await PokemonNamesPromise()).slice(offset, limit);
 	for (let i = 0; i < pokemonList.length; i++) {
 		pokemonList[i] = makePokemonPromise(pokemonList[i]);
 	}
@@ -53,4 +53,4 @@ export async function getPokemonComponents(
 }
 
 const promise = getPokemonNameList(0, 99999);
-export const getPokemonNames = promise.then.bind(promise);
+export const PokemonNamesPromise = promise.then.bind(promise);
