@@ -14,8 +14,15 @@ function renderPromiseComponentList(
 	}
 }
 
+let showingSearch = false;
 const renderAmount = 15;
 const previousBatch = [0, renderAmount];
+const searchButtonElement = document.querySelector(
+	".search-button"
+) as HTMLButtonElement;
+const searchInputElement = document.querySelector(
+	".search-input"
+) as HTMLInputElement;
 
 getPokemonComponents(...previousBatch).then((pokemonList) =>
 	renderPromiseComponentList(
@@ -24,46 +31,26 @@ getPokemonComponents(...previousBatch).then((pokemonList) =>
 	)
 );
 
-const searchButtonElement = document.querySelector(
-	".search-button"
-) as HTMLButtonElement;
-searchButtonElement.addEventListener("click", (e) => {
-	const searchQuery = (
-		(e.target as HTMLElement).previousSibling as HTMLInputElement
-	).value;
-	PokemonNamesPromise((pokemons) => {
-		getPokemonComponents(
-			0,
-			0,
-			pokemons.filter((item: any) => item.name.includes(searchQuery))
-		).then((pokemonList) =>
-			renderPromiseComponentList(
-				pokemonList,
-				document.getElementsByClassName("pokemon-list")[0] as HTMLElement
-			)
-		);
-	});
+searchButtonElement.addEventListener("click", () => {
+	const searchQuery = searchInputElement.value;
+	if (!searchQuery.length) {
+		showingSearch = false;
+		return;
+	}
+	showingSearch = true;
+	renderPokemonByQuery(searchQuery);
 });
 
-const searchInputElement = document.querySelector(
-	".search-input"
-) as HTMLInputElement;
-searchInputElement.addEventListener("input", (e) => {
-	const searchQuery = (e.target as HTMLInputElement).value;
-	if (!searchQuery.length) return;
-	PokemonNamesPromise((pokemons) => {
-		getPokemonComponents(
-			0,
-			0,
-			pokemons.filter((item: any) => item.name.includes(searchQuery))
-		).then((pokemonList) =>
-			renderPromiseComponentList(
-				pokemonList,
-				document.getElementsByClassName("pokemon-list")[0] as HTMLElement
-			)
-		);
-	});
+searchInputElement.addEventListener("input", () => {
+	const searchQuery = searchInputElement.value;
+	if (!searchQuery.length) {
+		showingSearch = false;
+		return;
+	}
+	showingSearch = true;
+	renderPokemonByQuery(searchQuery);
 });
+
 searchInputElement.addEventListener("keydown", (e) => {
 	if (e.key === "Enter") searchButtonElement.click();
 });
@@ -79,7 +66,8 @@ PokemonNamesPromise((pokemonNames) => {
 	}
 });
 
-window.onscroll = function (ev) {
+window.onscroll = () => {
+	if (showingSearch) return;
 	if (
 		window.innerHeight + window.scrollY >=
 		document.body.scrollHeight - 2000
@@ -95,3 +83,17 @@ window.onscroll = function (ev) {
 		);
 	}
 };
+function renderPokemonByQuery(searchQuery: string) {
+	PokemonNamesPromise((pokemons) =>
+		getPokemonComponents(
+			0,
+			99999,
+			pokemons.filter((item: any) => item.name.includes(searchQuery))
+		).then((pokemonList) =>
+			renderPromiseComponentList(
+				pokemonList,
+				document.getElementsByClassName("pokemon-list")[0] as HTMLElement
+			)
+		)
+	);
+}
