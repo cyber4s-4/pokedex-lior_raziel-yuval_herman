@@ -15,19 +15,40 @@ getPokemonComponents(0, 15).then((pokemonList) =>
 	)
 );
 
-(document.querySelector(".search-button") as HTMLElement).addEventListener(
-	"click",
+(
+	document.querySelector(".search-button") as HTMLButtonElement
+).addEventListener("click", (e) => {
+	const searchQuery = (
+		(e.target as HTMLElement).previousSibling as HTMLInputElement
+	).value;
+	getPokemonNames((pokemons) => {
+		getPokemonComponents(
+			0,
+			0,
+			pokemons
+				.filter((item: any) => item.name.includes(searchQuery))
+				.slice(0, 9)
+		).then((pokemonList) =>
+			renderComponentList(
+				pokemonList,
+				document.getElementsByClassName("pokemon-list")[0] as HTMLElement
+			)
+		);
+	});
+});
+
+(document.querySelector(".search-input") as HTMLInputElement).addEventListener(
+	"input",
 	(e) => {
-		const searchQuery = (
-			(e.target as HTMLElement).previousSibling as HTMLInputElement
-		).value;
+		const searchQuery = (e.target as HTMLInputElement).value;
+		console.log(searchQuery);
 		getPokemonNames((pokemons) => {
 			getPokemonComponents(
 				0,
 				0,
 				pokemons
 					.filter((item: any) => item.name.includes(searchQuery))
-					.slice(0, 9)
+					.slice(0, 3) // TODO add dynamic loading, keep loading in the background
 			).then((pokemonList) =>
 				renderComponentList(
 					pokemonList,
