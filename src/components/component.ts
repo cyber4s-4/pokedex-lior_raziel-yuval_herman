@@ -1,3 +1,3 @@
-export interface Component{ 
-    createHtml():HTMLElement;
+export interface Component {
+	createHtml(): HTMLElement;
 }

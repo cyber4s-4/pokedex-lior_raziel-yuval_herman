@@ -15,7 +15,6 @@ export class Pokemon implements Component {
 		this.img = img;
 		this.description = description;
 		this.stats = stats;
-		// console.log(this.stats);
 	}
 
 	createHtml(): HTMLElement {
@@ -34,7 +33,10 @@ export class Pokemon implements Component {
             <div class="stats-div flex-down"></div>
             </div>
             </div>
-            <p class="pokemon-description">${this.description}</p>`;
+            <p class="pokemon-description">${this.description.replace(
+					"", // replace a strange char we get from the api sometimes
+					" "
+				)}</p>`;
 
 		for (let i = 0; i < stats.length; i++) {
 			const statsParagraph = document.createElement("p");
