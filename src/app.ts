@@ -1,15 +1,20 @@
 import { Component } from "./components/component";
 import { getPokemonComponents, getPokemonNames } from "./pokemonApi";
 
-function renderComponentList(components: Component[], listParent: HTMLElement) {
+function renderPromiseComponentList(
+	promises: Promise<Component>[],
+	listParent: HTMLElement
+) {
 	listParent.innerHTML = "";
-	for (const component of components) {
-		listParent.appendChild(component.createHtml());
+	for (const promise of promises) {
+		promise.then((component) =>
+			listParent.appendChild(component.createHtml())
+		);
 	}
 }
 
 getPokemonComponents(0, 15).then((pokemonList) =>
-	renderComponentList(
+	renderPromiseComponentList(
 		pokemonList,
 		document.getElementsByClassName("pokemon-list")[0] as HTMLElement
 	)
@@ -26,11 +31,9 @@ searchButtonElement.addEventListener("click", (e) => {
 		getPokemonComponents(
 			0,
 			0,
-			pokemons
-				.filter((item: any) => item.name.includes(searchQuery))
-				.slice(0, 9)
+			pokemons.filter((item: any) => item.name.includes(searchQuery))
 		).then((pokemonList) =>
-			renderComponentList(
+			renderPromiseComponentList(
 				pokemonList,
 				document.getElementsByClassName("pokemon-list")[0] as HTMLElement
 			)
@@ -47,11 +50,9 @@ searchInputElement.addEventListener("input", (e) => {
 		getPokemonComponents(
 			0,
 			0,
-			pokemons
-				.filter((item: any) => item.name.includes(searchQuery))
-				.slice(0, 3) // TODO add dynamic loading, keep loading in the background
+			pokemons.filter((item: any) => item.name.includes(searchQuery))
 		).then((pokemonList) =>
-			renderComponentList(
+			renderPromiseComponentList(
 				pokemonList,
 				document.getElementsByClassName("pokemon-list")[0] as HTMLElement
 			)
