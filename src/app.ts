@@ -35,3 +35,14 @@ getPokemonComponents(0, 15).then((pokemonList) =>
 		});
 	}
 );
+
+getPokemonNames((pokemonNames) => {
+	const dataListElement = document.querySelector(
+		"#pokemon-names"
+	) as HTMLElement;
+	for (const pokemon of pokemonNames) {
+		const optionElement = document.createElement("option");
+		optionElement.value = pokemon.name;
+		dataListElement.appendChild(optionElement);
+	}
+});
