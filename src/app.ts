@@ -3,9 +3,10 @@ import { getPokemonComponents, PokemonNamesPromise } from "./pokemonApi";
 
 function renderPromiseComponentList(
 	promises: Promise<Component>[],
-	listParent: HTMLElement
+	listParent: HTMLElement,
+	removeOld: boolean = true
 ) {
-	listParent.innerHTML = "";
+	if (removeOld) listParent.innerHTML = "";
 	for (const promise of promises) {
 		promise.then((component) =>
 			listParent.appendChild(component.createHtml())
@@ -13,7 +14,10 @@ function renderPromiseComponentList(
 	}
 }
 
-getPokemonComponents(0, 15).then((pokemonList) =>
+const renderAmount = 15;
+const previousBatch = [0, renderAmount];
+
+getPokemonComponents(...previousBatch).then((pokemonList) =>
 	renderPromiseComponentList(
 		pokemonList,
 		document.getElementsByClassName("pokemon-list")[0] as HTMLElement
@@ -46,6 +50,7 @@ const searchInputElement = document.querySelector(
 ) as HTMLInputElement;
 searchInputElement.addEventListener("input", (e) => {
 	const searchQuery = (e.target as HTMLInputElement).value;
+	if (!searchQuery.length) return;
 	PokemonNamesPromise((pokemons) => {
 		getPokemonComponents(
 			0,
@@ -73,3 +78,20 @@ PokemonNamesPromise((pokemonNames) => {
 		dataListElement.appendChild(optionElement);
 	}
 });
+
+window.onscroll = function (ev) {
+	if (
+		window.innerHeight + window.scrollY >=
+		document.body.scrollHeight - 2000
+	) {
+		previousBatch[0] += renderAmount;
+		previousBatch[1] += renderAmount;
+		getPokemonComponents(...previousBatch).then((pokemonList) =>
+			renderPromiseComponentList(
+				pokemonList,
+				document.getElementsByClassName("pokemon-list")[0] as HTMLElement,
+				false
+			)
+		);
+	}
+};
