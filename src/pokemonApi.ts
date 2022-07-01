@@ -45,7 +45,8 @@ export async function getPokemonComponents(
 	pokemonNameList: null | any[] = null
 ) {
 	const pokemonList =
-		pokemonNameList ?? (await PokemonNamesPromise()).slice(offset, limit);
+		pokemonNameList?.slice(offset, limit) ??
+		(await PokemonNamesPromise()).slice(offset, limit);
 	for (let i = 0; i < pokemonList.length; i++) {
 		pokemonList[i] = makePokemonPromise(pokemonList[i]);
 	}
