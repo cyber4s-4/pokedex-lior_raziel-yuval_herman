@@ -25,7 +25,9 @@ getPokemonComponents(0, 15).then((pokemonList) =>
 			getPokemonComponents(
 				0,
 				0,
-				pokemons.filter((item: any) => item.name.includes(searchQuery))
+				pokemons
+					.filter((item: any) => item.name.includes(searchQuery))
+					.slice(0, 9)
 			).then((pokemonList) =>
 				renderComponentList(
 					pokemonList,
