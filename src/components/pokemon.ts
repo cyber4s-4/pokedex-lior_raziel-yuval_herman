@@ -1,6 +1,4 @@
-import { Component } from "./component";
-
-export class Pokemon implements Component {
+export class Pokemon {
 	name: string;
 	img: string;
 	description: string;
