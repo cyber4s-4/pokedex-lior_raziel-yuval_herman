@@ -2,6 +2,11 @@ import { Pokemon } from "./components/pokemon";
 
 const baseUrl = "https://pokeapi.co/api/v2/";
 
+export interface PokemonName {
+	name: string;
+	url: string;
+}
+
 export async function fetchJson(url: string) {
 	return await (await fetch(url)).json();
 }
@@ -9,7 +14,7 @@ export async function fetchJson(url: string) {
 export async function getPokemonNameList(
 	offset: number = 0,
 	limit: number = 20
-) {
+): Promise<PokemonName[]> {
 	return (
 		await fetchJson(`${baseUrl}pokemon/?limit=${limit}&offset=${offset}`)
 	).results;
@@ -23,7 +28,7 @@ function resolveImage(spritesObj: any): string {
 	);
 }
 
-async function makePokemonPromise(pokemonNameObj: any) {
+async function makePokemonPromise(pokemonNameObj: PokemonName) {
 	const name = pokemonNameObj.name;
 	const pokemonData = await fetchJson(pokemonNameObj.url);
 	const species = await fetchJson(pokemonData.species.url);
@@ -42,13 +47,14 @@ async function makePokemonPromise(pokemonNameObj: any) {
 export async function getPokemonComponents(
 	offset: number = 0,
 	limit: number = 20,
-	pokemonNameList: null | any[] = null
+	pokemonNameList: null | PokemonName[] = null
 ) {
-	const pokemonList =
+	pokemonNameList =
 		pokemonNameList?.slice(offset, limit) ??
 		(await PokemonNamesPromise()).slice(offset, limit);
-	for (let i = 0; i < pokemonList.length; i++) {
-		pokemonList[i] = makePokemonPromise(pokemonList[i]);
+	const pokemonList: Promise<Pokemon>[] = [];
+	for (let i = 0; i < pokemonNameList.length; i++) {
+		pokemonList.push(makePokemonPromise(pokemonNameList[i]));
 	}
 	return pokemonList;
 }
