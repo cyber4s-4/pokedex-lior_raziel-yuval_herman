@@ -1,23 +1,26 @@
 $pokemonComponentBackground: #2ad4ffff;
 $complementaryColor: #ff5555ff;
 @keyframes shake {
-	0% { transform: translate(-3px, 0px) rotate(90deg); }
-	50% { transform: translate(-1px, -1px) rotate(360deg); }
-  }
-  
+	0% {
+		transform: translate(-3px, 0px) rotate(90deg);
+	}
+	50% {
+		transform: translate(-1px, -1px) rotate(360deg);
+	}
+}
 
 .flex-right {
 	display: flex;
 	flex-direction: row;
 }
 
-body {
-	margin: 0;
-}
-
 .flex-down {
 	display: flex;
 	flex-direction: column;
+}
+
+body {
+	margin: 0;
 }
 
 .text-box {
@@ -28,14 +31,14 @@ body {
 
 .header {
 	@extend .flex-right;
-	justify-content: space-around;
+	justify-content: space-between;
 	height: 15rem;
 	background-color: $complementaryColor;
 	margin: 0;
 	margin-bottom: 10rem;
 	.pokeball-image {
 		transform: translateY(4rem);
-		object-fit:scale-down;
+		object-fit: scale-down;
 		width: 20%;
 	}
 	.pokemon-logo {
@@ -50,20 +53,19 @@ body {
 		height: 100%;
 		margin-right: 4rem;
 		gap: 1rem;
-		
-		}
-		.nav-link {
-			margin: 0.5rem;
-			padding: 0.2rem;
-			font-size: 1.5rem;
-			text-decoration: none;
-			color: black;
-			background-color: red;
-			border: solid black 1px;
-			border-radius: 0.5rem;
-			text-transform: capitalize;
-			&:hover{
-				transform: scale(1.5);
+	}
+	.nav-link {
+		margin: 0.5rem;
+		padding: 0.2rem;
+		font-size: 1.5rem;
+		text-decoration: none;
+		color: black;
+		background-color: red;
+		border: solid black 1px;
+		border-radius: 0.5rem;
+		text-transform: capitalize;
+		&:hover {
+			transform: scale(1.5);
 		}
 	}
 }
@@ -92,13 +94,13 @@ body {
 		background-color: red;
 		padding: 1rem;
 		cursor: pointer;
-		&:hover{	
+		&:hover {
 			height: 4.5rem;
 			transform: scale(1.5);
 			border-radius: 50%;
 			background: linear-gradient(-180deg, red 50%, white 50%);
 		}
-		&:active{ 
+		&:active {
 			animation: shake 0.2s;
 		}
 	}
@@ -126,10 +128,10 @@ body {
 			flex: 0 1 20rem;
 			font-size: small;
 			cursor: pointer;
-			&:hover{
+			&:hover {
 				transform: scale(1.1);
 			}
-			&:active{ 
+			&:active {
 				animation: shake 0.2s;
 			}
 			.flex-right {
