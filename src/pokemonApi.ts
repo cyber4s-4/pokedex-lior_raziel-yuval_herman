@@ -11,6 +11,12 @@ export async function fetchJson(url: string) {
 	return await (await fetch(url)).json();
 }
 
+/**
+ * Initiates fetches for pokemon names from the api
+ * @param offset Offset from names array beginning
+ * @param limit Amount of names to load
+ * @returns A Promise list with pokemon names
+ */
 export async function getPokemonNameList(
 	offset: number = 0,
 	limit: number = 20
@@ -20,7 +26,12 @@ export async function getPokemonNameList(
 	).results;
 }
 
-function resolveImage(spritesObj: any): string {
+/**
+ * Tries to load images and uses several fallbacks if image is unavailable
+ * @param spritesObj A sprite object received from the API
+ * @returns String or undefined
+ */
+function resolveImage(spritesObj: any): string | undefined {
 	return (
 		spritesObj.other.dream_world.front_default ||
 		spritesObj.other["official-artwork"].front_default ||
@@ -28,6 +39,11 @@ function resolveImage(spritesObj: any): string {
 	);
 }
 
+/**
+ * Creates a promise that will resolve to a Pokemon Object after API fetches.
+ * @param pokemonNameObj A pokemon name object from the API
+ * @returns A Pokemon promise
+ */
 async function makePokemonPromise(pokemonNameObj: PokemonName) {
 	const name = pokemonNameObj.name;
 	const pokemonData = await fetchJson(pokemonNameObj.url);
@@ -44,6 +60,13 @@ async function makePokemonPromise(pokemonNameObj: PokemonName) {
 	);
 }
 
+/**
+ * Initiates fetches for pokemon' and returns a promise array
+ * @param offset Offset from array beginning
+ * @param limit Amount of pokemon's to load
+ * @param pokemonNameList A list of pokemon names to use, if not provided, fetch from server using offset and limit
+ * @returns Pokemon promise array
+ */
 export async function getPokemonComponents(
 	offset: number = 0,
 	limit: number = 20,
@@ -60,4 +83,5 @@ export async function getPokemonComponents(
 }
 
 const promise = getPokemonNameList(0, 99999);
+// A promise that resolves to all pokemon names
 export const PokemonNamesPromise = promise.then.bind(promise);

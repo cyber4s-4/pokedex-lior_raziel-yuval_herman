@@ -1,6 +1,14 @@
 import { Pokemon } from "./components/pokemon";
 import { getPokemonComponents, PokemonNamesPromise } from "./pokemonApi";
 
+/**
+ * Renders Pokemon components as they arrive from the server.
+ * The filterFromQuery variable is to avoid race condition when showing pokemon's from search.
+ * @param promises Pokemon promise array
+ * @param listParent HTMLElement to append pokemon's to
+ * @param filterFromQuery A boolean determining wether to filter pokemon's after they are fetched
+ * @param removeOld A boolean determining wether to remove previously shown pokemon's
+ */
 function renderPromiseComponentList(
 	promises: Promise<Pokemon>[],
 	listParent: HTMLElement,
