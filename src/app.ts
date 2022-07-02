@@ -1,16 +1,22 @@
-import { Component } from "./components/component";
+import { Pokemon } from "./components/pokemon";
 import { getPokemonComponents, PokemonNamesPromise } from "./pokemonApi";
 
 function renderPromiseComponentList(
-	promises: Promise<Component>[],
+	promises: Promise<Pokemon>[],
 	listParent: HTMLElement,
+	filterFromQuery: boolean = false,
 	removeOld: boolean = true
 ) {
 	if (removeOld) listParent.innerHTML = "";
 	for (const promise of promises) {
-		promise.then((component) =>
-			listParent.appendChild(component.createHtml())
-		);
+		promise.then((pokemon) => {
+			if (
+				filterFromQuery &&
+				!pokemon.name.includes(searchInputElement.value)
+			)
+				return;
+			listParent.appendChild(pokemon.createHtml());
+		});
 	}
 }
 
@@ -78,6 +84,7 @@ window.onscroll = () => {
 			renderPromiseComponentList(
 				pokemonList,
 				document.getElementsByClassName("pokemon-list")[0] as HTMLElement,
+				undefined,
 				false
 			)
 		);
@@ -88,12 +95,13 @@ function renderPokemonByQuery(searchQuery: string) {
 		getPokemonComponents(
 			0,
 			99999,
-			pokemons.filter((item: any) => item.name.includes(searchQuery))
-		).then((pokemonList) =>
+			pokemons.filter((item) => item.name.includes(searchQuery))
+		).then((pokemonList) => {
 			renderPromiseComponentList(
 				pokemonList,
-				document.getElementsByClassName("pokemon-list")[0] as HTMLElement
-			)
-		)
+				document.getElementsByClassName("pokemon-list")[0] as HTMLElement,
+				true
+			);
+		})
 	);
 }
