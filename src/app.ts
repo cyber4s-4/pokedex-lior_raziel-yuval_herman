@@ -7,15 +7,20 @@ function renderPromiseComponentList(
 	filterFromQuery: boolean = false,
 	removeOld: boolean = true
 ) {
-	if (removeOld) listParent.innerHTML = "";
+	if (removeOld) {
+		listParent.innerHTML = "";
+		currentShownPokemonNames.length = 0;
+	}
 	for (const promise of promises) {
 		promise.then((pokemon) => {
 			if (
-				filterFromQuery &&
-				!pokemon.name.includes(searchInputElement.value)
+				currentShownPokemonNames.includes(pokemon.name) ||
+				(filterFromQuery &&
+					!pokemon.name.includes(searchInputElement.value))
 			)
 				return;
 			listParent.appendChild(pokemon.createHtml());
+			currentShownPokemonNames.push(pokemon.name);
 		});
 	}
 }
@@ -23,6 +28,7 @@ function renderPromiseComponentList(
 let showingSearch = false;
 const renderAmount = 15;
 const previousBatch = [0, renderAmount];
+const currentShownPokemonNames: string[] = [];
 const searchButtonElement = document.querySelector(
 	".search-button"
 ) as HTMLButtonElement;
