@@ -1,13 +1,5 @@
 $pokemonComponentBackground: #2ad4ffff;
 $complementaryColor: #ff5555ff;
-@keyframes shake {
-	0% {
-		transform: translate(-3px, 0px) rotate(90deg);
-	}
-	50% {
-		transform: translate(-1px, -1px) rotate(360deg);
-	}
-}
 
 .flex-right {
 	display: flex;
@@ -101,7 +93,7 @@ body {
 			background: linear-gradient(-180deg, red 50%, white 50%);
 		}
 		&:active {
-			animation: shake 0.2s;
+			animation: search-rotate 0.2s;
 		}
 	}
 }
@@ -109,61 +101,92 @@ body {
 .main-container {
 	display: flex;
 	align-items: center;
-	justify-content: center;
 
 	.pokemon-list {
+		flex-grow: 0;
+		flex-shrink: 0;
 		@extend .flex-right;
 		flex-wrap: wrap;
 		justify-content: center;
+		gap: 10rem;
+		.pokemon-container {
+			flex: 0 0 20rem;
+			height: 20rem;
+			transition: all 1s;
+			position: relative;
 
-		.pokemon-component {
-			@extend .flex-down;
-			gap: 1rem;
-			background-color: $pokemonComponentBackground;
-			border: solid darken($color: $pokemonComponentBackground, $amount: 20)
-				1.5rem;
-			border-radius: 2rem;
-			padding: 1rem;
-			margin: 2rem;
-			flex: 0 1 20rem;
-			font-size: small;
-			cursor: pointer;
-			&:hover {
-				transform: scale(1.1);
-			}
-			&:active {
-				animation: shake 0.2s;
-			}
-			.flex-right {
-				gap: 1.5rem;
-				.pokemon-image {
-					width: 7rem;
-					object-fit: scale-down;
-				}
-				.flex-down {
-					.pokemon-name {
-						text-align: center;
-						text-transform: capitalize;
-						background-color: $complementaryColor;
-						border-radius: 5px;
-						text-shadow: 1px 2px 3px rgb(93, 93, 93);
-						width: 15rem;
+			.pokemon-component-front,
+			.pokemon-component-back {
+				flex: 0 0 20rem;
+
+				backface-visibility: hidden;
+				position: absolute;
+				@extend .flex-down;
+				gap: 1rem;
+				background-color: $pokemonComponentBackground;
+				border: solid
+					darken($color: $pokemonComponentBackground, $amount: 20) 1.5rem;
+				border-radius: 2rem;
+				padding: 1rem;
+				font-size: small;
+				cursor: pointer;
+				.flex-right {
+					gap: 1.5rem;
+					.pokemon-image {
+						width: 7rem;
+						object-fit: scale-down;
 					}
-					.stats-div {
-						@extend .text-box;
-						gap: 0.5rem;
-						p {
+					.flex-down {
+						.pokemon-name {
+							text-align: center;
 							text-transform: capitalize;
-							margin: 0;
+							background-color: $complementaryColor;
+							border-radius: 5px;
+							text-shadow: 1px 2px 3px rgb(93, 93, 93);
+							width: 15rem;
+						}
+						.stats-div {
+							@extend .text-box;
+							gap: 0.5rem;
+							p {
+								text-transform: capitalize;
+								margin: 0;
+							}
 						}
 					}
 				}
+				.pokemon-description {
+					@extend .text-box;
+					padding: 0.5rem 1rem;
+					margin-bottom: 0;
+				}
 			}
-			.pokemon-description {
-				@extend .text-box;
-				padding: 0.5rem 1rem;
-				margin-bottom: 0;
+
+			.pokemon-component-back {
+				transform: rotateY(180deg);
+			}
+
+			&:active {
+				transform: rotateY(180deg);
 			}
 		}
+	}
+}
+
+@keyframes search-rotate {
+	0% {
+		transform: translate(-3px, 0px) rotate(90deg);
+	}
+	50% {
+		transform: translate(-1px, -1px) rotate(360deg);
+	}
+}
+
+@keyframes flip-card {
+	from {
+		transform: rotateY(0);
+	}
+	to {
+		transform: rotateY(180deg);
 	}
 }
