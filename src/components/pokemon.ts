@@ -78,6 +78,9 @@ export class Pokemon {
 		pokemonContainer.classList.add("pokemon-container");
 		pokemonContainer.appendChild(this.#makeFrontHTML());
 		pokemonContainer.appendChild(this.#makeBackHTML());
+		pokemonContainer.addEventListener("click", () => {
+			pokemonContainer.classList.toggle("popup-card");
+		});
 		return pokemonContainer;
 	}
 }

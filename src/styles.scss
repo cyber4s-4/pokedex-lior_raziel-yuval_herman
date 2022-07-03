@@ -103,9 +103,8 @@ body {
 	align-items: center;
 
 	.pokemon-list {
-		flex-grow: 0;
-		flex-shrink: 0;
 		@extend .flex-right;
+		flex: 0 0 90vw;
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: 10rem;
@@ -118,8 +117,6 @@ body {
 			.pokemon-component-front,
 			.pokemon-component-back {
 				flex: 0 0 20rem;
-
-				backface-visibility: hidden;
 				position: absolute;
 				@extend .flex-down;
 				gap: 1rem;
@@ -164,10 +161,22 @@ body {
 
 			.pokemon-component-back {
 				transform: rotateY(180deg);
+				display: none;
 			}
 
-			&:active {
-				transform: rotateY(180deg);
+			&.popup-card {
+				transform: rotateY(180deg) scale(2);
+				z-index: 1;
+				position: fixed;
+				top: 25%;
+				left: 75%;
+				.pokemon-component-front {
+					display: none;
+				}
+				.pokemon-component-back {
+					transform: rotateY(180deg);
+					display: flex;
+				}
 			}
 		}
 	}
