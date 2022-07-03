@@ -48,12 +48,12 @@ export class Pokemon {
 	 */
 	#makeBackHTML(): HTMLElement {
 		// Replace a strange char we get from the api sometimes
-		const description = "This is the back!!!!"; //this.description.replace("", " ");
+		const description = "This is the back!!!!";
 		// Show alt text or image not found
 		const imgAltText = this.img ? `A ${this.name} image` : "No image found";
 		// Add a P element for every stat
 		const stats = this.stats.map((element: any) => {
-			return `<p><strong>${element.stat.name}</strong> is ${element.base_stat} at ${element.effort} effort</p>`;
+			return `<p>WE ARE SO SMART!!!!</p>`;
 		});
 
 		const containerDiv = document.createElement("div");
