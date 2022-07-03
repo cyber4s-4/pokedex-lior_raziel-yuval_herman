@@ -27,7 +27,7 @@ function renderPromiseComponentList(
 					!pokemon.name.includes(searchInputElement.value))
 			)
 				return;
-			listParent.appendChild(pokemon.createHtml());
+			listParent.appendChild(pokemon.createHTML());
 			currentShownPokemonNames.push(pokemon.name);
 		});
 	}
