@@ -7,6 +7,14 @@ export interface PokemonName {
 	url: string;
 }
 
+export interface PokemonExtraDetails {
+	color: string;
+	height: string;
+	weight: string;
+	category: string;
+	abilities: string[];
+}
+
 export async function fetchJson(url: string) {
 	return await (await fetch(url)).json();
 }
@@ -49,14 +57,21 @@ async function makePokemonPromise(pokemonNameObj: PokemonName) {
 	const pokemonData = await fetchJson(pokemonNameObj.url);
 	const species = await fetchJson(pokemonData.species.url);
 	const stats = pokemonData.stats;
-
+	const extraData: PokemonExtraDetails = {
+		color: species.color.name,
+		height: pokemonData.height,
+		abilities: pokemonData.abilities.map((e: any) => e.ability.name),
+		category: species.genera.find((e: any) => e.language.name === "en").genus,
+		weight: pokemonData.weight,
+	};
 	return new Pokemon(
 		name,
 		resolveImage(pokemonData.sprites),
 		species.flavor_text_entries.find(
 			(element: any) => element.language.name === "en"
 		).flavor_text,
-		stats
+		stats,
+		extraData
 	);
 }
 

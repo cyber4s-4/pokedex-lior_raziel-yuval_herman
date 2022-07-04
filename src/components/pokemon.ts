@@ -1,25 +1,30 @@
+import { PokemonExtraDetails } from "src/pokemonApi";
+
 export class Pokemon {
 	name: string;
 	img: string;
 	description: string;
 	stats: object[];
+	extraData: PokemonExtraDetails;
 	constructor(
 		name: string,
 		img: string | undefined,
 		description: string,
-		stats: Object[]
+		stats: Object[],
+		extra: PokemonExtraDetails
 	) {
 		this.name = name;
 		this.img = img ?? "";
 		this.description = description;
 		this.stats = stats;
+		this.extraData = extra;
 	}
 
 	/**
 	 * Creates front HTML for the pokemon card.
 	 * @returns HTMLElement
 	 */
-	#makeFrontHTML(): HTMLElement {
+	#makeFrontSideHTML(): HTMLElement {
 		// Replace a strange char we get from the api sometimes
 		const description = this.description.replace("", " ");
 		// Show alt text or image not found
@@ -34,7 +39,9 @@ export class Pokemon {
 		containerDiv.innerHTML = ` <div class="flex-right">
             <img class="pokemon-image" src="${this.img}" alt="${imgAltText}">
             <div class="flex-down">
-            <h1 class="pokemon-name"> ${this.name}</h1>
+            <h1 class="pokemon-name" style="background-color: ${
+					this.extraData.color
+				};"> ${this.name}</h1>
             <div class="stats-div flex-down">${stats.join("")}</div>
             </div>
             </div>
@@ -46,26 +53,27 @@ export class Pokemon {
 	 * Creates back HTML for the pokemon card.
 	 * @returns HTMLElement
 	 */
-	#makeBackHTML(): HTMLElement {
-		// Replace a strange char we get from the api sometimes
-		const description = "This is the back!!!!";
-		// Show alt text or image not found
+	#makeBackSideHTML(): HTMLElement {
+		const description = JSON.stringify(this.extraData);
 		const imgAltText = this.img ? `A ${this.name} image` : "No image found";
-		// Add a P element for every stat
-		const stats = this.stats.map((element: any) => {
-			return `<p>WE ARE SO SMART!!!!</p>`;
-		});
 
 		const containerDiv = document.createElement("div");
 		containerDiv.classList.add("pokemon-component-back");
 		containerDiv.innerHTML = ` <div class="flex-right">
             <img class="pokemon-image" src="${this.img}" alt="${imgAltText}">
             <div class="flex-down">
-            <h1 class="pokemon-name"> ${this.name}</h1>
-            <div class="stats-div flex-down">${stats.join("")}</div>
+            <h1 class="pokemon-name" style="background-color: ${
+					this.extraData.color
+				};"> ${this.name}</h1>
+            <div class="stats-div flex-down">
+			<p><strong>Height</strong>: ${Number(this.extraData.height) * 10} cm</p>
+			<p><strong>Weight</strong>: ${this.extraData.weight}</p>
+			<p><strong>Abilities</strong>: ${this.extraData.abilities.join(", ")}</p>
+			<p><strong>Category</strong>: ${this.extraData.category}</p>
+			</div>
             </div>
-            </div>
-            <p class="pokemon-description">${description}</p>`;
+            </div>`;
+
 		return containerDiv;
 	}
 
@@ -76,8 +84,8 @@ export class Pokemon {
 	createHTML(): HTMLElement {
 		const pokemonContainer = document.createElement("div");
 		pokemonContainer.classList.add("pokemon-container");
-		pokemonContainer.appendChild(this.#makeFrontHTML());
-		pokemonContainer.appendChild(this.#makeBackHTML());
+		pokemonContainer.appendChild(this.#makeFrontSideHTML());
+		pokemonContainer.appendChild(this.#makeBackSideHTML());
 		pokemonContainer.addEventListener("click", () => {
 			pokemonContainer.classList.toggle("popup-card");
 		});
