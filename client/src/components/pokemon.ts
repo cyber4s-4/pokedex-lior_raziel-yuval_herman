@@ -1,23 +1,24 @@
-import { PokemonExtraDetails } from "src/pokemonApi";
-
 export class Pokemon {
 	name: string;
 	img: string;
 	description: string;
 	stats: object[];
-	extraData: PokemonExtraDetails;
-	constructor(
-		name: string,
-		img: string | undefined,
-		description: string,
-		stats: Object[],
-		extra: PokemonExtraDetails
-	) {
-		this.name = name;
-		this.img = img ?? "";
-		this.description = description;
-		this.stats = stats;
-		this.extraData = extra;
+	color: string;
+	height: number;
+	abilities: string[];
+	category: string;
+	weight: number;
+	constructor(pokemonData: any) {
+		// TODO make interface
+		this.name = pokemonData.name;
+		this.img = pokemonData.image ?? "";
+		this.description = pokemonData.description;
+		this.stats = pokemonData.stats;
+		this.color = pokemonData.color;
+		this.height = pokemonData.height;
+		this.abilities = pokemonData.abilities;
+		this.category = pokemonData.category;
+		this.weight = pokemonData.weight;
 	}
 
 	/**
@@ -40,7 +41,7 @@ export class Pokemon {
             <img class="pokemon-image" src="${this.img}" alt="${imgAltText}">
             <div class="flex-down">
             <h1 class="pokemon-name" style="background-color: ${
-					this.extraData.color
+					this.color
 				};"> ${this.name}</h1>
             <div class="stats-div flex-down">${stats.join("")}</div>
             </div>
@@ -54,7 +55,7 @@ export class Pokemon {
 	 * @returns HTMLElement
 	 */
 	#makeBackSideHTML(): HTMLElement {
-		const description = JSON.stringify(this.extraData);
+		const description = "";
 		const imgAltText = this.img ? `A ${this.name} image` : "No image found";
 
 		const containerDiv = document.createElement("div");
@@ -63,13 +64,13 @@ export class Pokemon {
             <img class="pokemon-image" src="${this.img}" alt="${imgAltText}">
             <div class="flex-down">
             <h1 class="pokemon-name" style="background-color: ${
-					this.extraData.color
+					this.color
 				};"> ${this.name}</h1>
             <div class="stats-div flex-down">
-			<p><strong>Height</strong>: ${Number(this.extraData.height) * 10} cm</p>
-			<p><strong>Weight</strong>: ${this.extraData.weight}</p>
-			<p><strong>Abilities</strong>: ${this.extraData.abilities.join(", ")}</p>
-			<p><strong>Category</strong>: ${this.extraData.category}</p>
+			<p><strong>Height</strong>: ${Number(this.height) * 10} cm</p>
+			<p><strong>Weight</strong>: ${this.weight}</p>
+			<p><strong>Abilities</strong>: ${this.abilities.join(", ")}</p>
+			<p><strong>Category</strong>: ${this.category}</p>
 			</div>
             </div>
             </div>`;
