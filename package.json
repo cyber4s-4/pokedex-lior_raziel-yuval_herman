@@ -1,26 +1,35 @@
 {
-  "name": "gulp_typescript",
-  "scripts": {
-    "start": "gulp",
-    "lint": "eslint ./src --ext .ts",
-    "jest": "jest",
-    "lint-fix": "eslint ./src --ext .ts --fix"
-  },
-  "dependencies": {
-    "@types/jest": "^28.1.1",
-    "@typescript-eslint/eslint-plugin": "^5.24.0",
-    "@typescript-eslint/parser": "^5.24.0",
-    "browser-sync": "^2.27.9",
-    "eslint": "^8.15.0",
-    "gulp": "^4.0.2",
-    "gulp-clean": "^0.4.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^5.1.0",
-    "jest": "^28.1.0",
-    "sass": "^1.51.0",
-    "source-map-loader": "^3.0.1",
-    "ts-jest": "^28.0.4",
-    "typescript": "^4.6.4",
-    "webpack-stream": "^7.0.0"
-  }
+	"name": "gulp_typescript",
+	"scripts": {
+		"start": "echo run \\'npm run client\\' to run client or \\'npm run server\\' to run the server",
+		"client": "gulp -f client/gulpfile.js",
+		"server": "tsc -p server/tsconfig.json && node server/dist/app.js",
+		"lint": "eslint ./src --ext .ts",
+		"jest": "jest",
+		"lint-fix": "eslint ./src --ext .ts --fix"
+	},
+	"dependencies": {
+		"@types/jest": "^28.1.1",
+		"@typescript-eslint/eslint-plugin": "^5.24.0",
+		"@typescript-eslint/parser": "^5.24.0",
+		"browser-sync": "^2.27.9",
+		"eslint": "^8.15.0",
+		"gulp": "^4.0.2",
+		"gulp-clean": "^0.4.0",
+		"gulp-rename": "^2.0.0",
+		"gulp-sass": "^5.1.0",
+		"jest": "^28.1.0",
+		"sass": "^1.51.0",
+		"source-map-loader": "^3.0.1",
+		"ts-jest": "^28.0.4",
+		"typescript": "^4.6.4",
+		"webpack-stream": "^7.0.0",
+		"body-parser": "^1.20.0",
+		"express": "^4.18.1"
+	},
+	"devDependencies": {
+		"@types/express": "^4.17.13",
+		"@types/node": "^17.0.42",
+		"nodemon": "^1.19.4"
+	}
 }
