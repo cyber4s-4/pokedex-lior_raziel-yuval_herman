@@ -14,11 +14,11 @@ interface User {
 	id: string;
 }
 
-const filePath: string = path.join(__dirname, "../data/data.json");
-const readFileData: User[] = JSON.parse(fs.readFileSync(filePath, "utf8"));
+const filePath: string = path.join(__dirname, "../data/pokemons.json");
+const pokemons: User[] = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
 app.get("/", (req: Request, res: Response) => {
-	res.status(200).send(readFileData);
+	res.status(200).send(pokemons);
 });
 
 app.listen(3000);
