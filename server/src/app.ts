@@ -3,9 +3,11 @@ import { Request, Response } from "express";
 import { json } from "body-parser";
 const fs = require("fs");
 const path = require("path");
+const cors = require("cors");
 
 const app = express();
 app.use(json());
+app.use(cors());
 
 interface User {
 	name: string;
