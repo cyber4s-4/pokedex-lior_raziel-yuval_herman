@@ -1,5 +1,5 @@
 import { Pokemon } from "./components/pokemon";
-import { getPokemonComponents, PokemonNamesPromise } from "./pokemonApi";
+import { getPokemonComponents } from "./pokemonApi";
 
 /**
  * Renders Pokemon components as they arrive from the server.
@@ -10,7 +10,7 @@ import { getPokemonComponents, PokemonNamesPromise } from "./pokemonApi";
  * @param removeOld A boolean determining wether to remove previously shown pokemon's
  */
 function renderPromiseComponentList(
-	promises: Promise<Pokemon>[],
+	pokemons: Pokemon[],
 	listParent: HTMLElement,
 	filterFromQuery: boolean = false,
 	removeOld: boolean = true
@@ -19,18 +19,25 @@ function renderPromiseComponentList(
 		listParent.innerHTML = "";
 		currentShownPokemonNames.length = 0;
 	}
-	for (const promise of promises) {
-		promise.then((pokemon) => {
-			if (
-				currentShownPokemonNames.includes(pokemon.name) ||
-				(filterFromQuery &&
-					!pokemon.name.includes(searchInputElement.value))
-			)
-				return;
-			listParent.appendChild(pokemon.createHTML());
-			currentShownPokemonNames.push(pokemon.name);
-		});
+	for (const pokemon of pokemons) {
+		if (
+			currentShownPokemonNames.includes(pokemon.name) ||
+			(filterFromQuery && !pokemon.name.includes(searchInputElement.value))
+		)
+			return;
+		listParent.appendChild(pokemon.createHTML());
+		currentShownPokemonNames.push(pokemon.name);
 	}
+}
+
+function renderPokemonByQuery(searchQuery: string) {
+	getPokemonComponents().then((pokemonList) => {
+		renderPromiseComponentList(
+			pokemonList.filter((pokemon) => pokemon.name.includes(searchQuery)),
+			document.getElementsByClassName("pokemon-list")[0] as HTMLElement,
+			true
+		);
+	});
 }
 
 let showingSearch = false;
@@ -44,7 +51,7 @@ const searchInputElement = document.querySelector(
 	".search-input"
 ) as HTMLInputElement;
 
-getPokemonComponents(...previousBatch).then((pokemonList) =>
+getPokemonComponents(previousBatch[0], previousBatch[1]).then((pokemonList) =>
 	renderPromiseComponentList(
 		pokemonList,
 		document.getElementsByClassName("pokemon-list")[0] as HTMLElement
@@ -75,17 +82,6 @@ searchInputElement.addEventListener("keydown", (e) => {
 	if (e.key === "Enter") searchButtonElement.click();
 });
 
-PokemonNamesPromise((pokemonNames) => {
-	const dataListElement = document.querySelector(
-		"#pokemon-names"
-	) as HTMLElement;
-	for (const pokemon of pokemonNames) {
-		const optionElement = document.createElement("option");
-		optionElement.value = pokemon.name;
-		dataListElement.appendChild(optionElement);
-	}
-});
-
 window.onscroll = () => {
 	if (showingSearch) return;
 	if (
@@ -104,18 +100,3 @@ window.onscroll = () => {
 		);
 	}
 };
-function renderPokemonByQuery(searchQuery: string) {
-	PokemonNamesPromise((pokemons) =>
-		getPokemonComponents(
-			0,
-			99999,
-			pokemons.filter((item) => item.name.includes(searchQuery))
-		).then((pokemonList) => {
-			renderPromiseComponentList(
-				pokemonList,
-				document.getElementsByClassName("pokemon-list")[0] as HTMLElement,
-				true
-			);
-		})
-	);
-}

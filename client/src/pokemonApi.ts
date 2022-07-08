@@ -1,16 +1,23 @@
 import { Pokemon } from "./components/pokemon";
 
-const baseUrl = "https://localhost:3000/";
+const baseUrl = "http://localhost:3000/";
+const pokemonComponents: Pokemon[] = [];
 
 export async function fetchJson(url: string) {
 	return await (await fetch(url)).json();
 }
 
-export async function getPokemonComponents() {
-	const pokemonObjects = await fetchJson(baseUrl);
-	const pokemonComponents: Pokemon[] = [];
+export async function getPokemonComponents(
+	offset: number = 0,
+	limit: number = Infinity
+) {
+	if (pokemonComponents.length)
+		return pokemonComponents.slice(offset, limit + offset);
+
+	const pokemonObjects = (await fetchJson(baseUrl)) as object[];
+
 	for (const pokemon of pokemonObjects) {
 		pokemonComponents.push(new Pokemon(pokemon));
 	}
-	return pokemonComponents;
+	return pokemonComponents.slice(offset, limit + offset);
 }
