@@ -1,6 +1,6 @@
 import { Pokemon } from "./components/pokemon";
 
-const baseUrl = `http://${process.env.HEROKU_APP_NAME}/pokemons`;
+const baseUrl = `http://yuval-lior-pokedex.herokuapp.com/pokemons`;
 const pokemonComponents: Pokemon[] = [];
 
 export async function fetchJson(url: string) {
