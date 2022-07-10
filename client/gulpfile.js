@@ -83,16 +83,20 @@ gulp.task("tsc-w", () => {
 	exec("tsc -w");
 });
 
+gulp.task("fullbuild",
+	gulp.series(
+	"start",
+	"scss",
+	"index",
+	"media",
+	"tsc",
+	"build"))
+
 // Run all together
 gulp.task(
 	"default",
 	gulp.series(
-		"start",
-		"scss",
-		"index",
-		"media",
-		"tsc",
-		"build",
+		"fullbuild",
 		gulp.parallel(
 			"browser-sync",
 			"browser-sync-watch",

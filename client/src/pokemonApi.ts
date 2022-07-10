@@ -1,6 +1,6 @@
 import { Pokemon } from "./components/pokemon";
 
-const baseUrl = "http://localhost:3000/";
+const baseUrl = "http://localhost:3000/pokemons";
 const pokemonComponents: Pokemon[] = [];
 
 export async function fetchJson(url: string) {
