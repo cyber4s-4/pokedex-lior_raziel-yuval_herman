@@ -8,6 +8,7 @@ const cors = require("cors");
 const app = express();
 app.use(json());
 app.use(cors());
+app.use(express.static(path.join(__dirname, "../../client/dist")));
 
 interface User {
 	name: string;
