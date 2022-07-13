@@ -5,6 +5,7 @@
 		"client": "gulp -f client/gulpfile.js",
 		"server": "tsc -p server/tsconfig.json && node server/dist/server.js",
 		"updateDatabase": "node server/updateDatabase.js",
+		"deploy": "gulp",
 		"lint": "eslint ./src --ext .ts",
 		"jest": "jest",
 		"lint-fix": "eslint ./src --ext .ts --fix"
