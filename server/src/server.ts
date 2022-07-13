@@ -19,7 +19,7 @@ interface User {
 const filePath: string = path.join(__dirname, "../data/pokemons.json");
 const pokemons: User[] = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
-app.get("/", (req: Request, res: Response) => {
+app.get("/pokemons", (req: Request, res: Response) => {
 	res.status(200).send(pokemons);
 });
 
