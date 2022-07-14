@@ -4,7 +4,7 @@ import { json } from "body-parser";
 import { Collection, Db, MongoClient } from "mongodb";
 import path from "path";
 import cors from "cors";
-const { cluster, password, UID, username } = require("./superSecret.ts");
+const { cluster, password, UID, username } = require("./superSecret");
 
 let pokedexDb: Db;
 let pokemonsCollection: Collection;
