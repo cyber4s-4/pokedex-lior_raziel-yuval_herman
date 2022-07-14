@@ -24,5 +24,5 @@ app.get("/pokemons", (req: Request, res: Response) => {
 	res.status(200).send(pokemons);
 });
 
-app.listen(3000);
-console.log("listening on 3000");
+app.listen(app.listen(process.env.PORT || 3000));
+console.log("listening on " + process.env.PORT || 3000);
