@@ -1,9 +1,16 @@
 import express from "express";
 import { Request, Response } from "express";
 import { json } from "body-parser";
-const fs = require("fs");
-const path = require("path");
-const cors = require("cors");
+import { cluster, password, UID, username } from "./superSecret";
+import { MongoClient } from "mongodb";
+import fs from "fs";
+import path from "path";
+import cors from "cors";
+
+
+const uri = `mongodb+srv://${username}:${password}@${cluster}.${UID}.mongodb.net/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri);
+client.connect();
 
 const app = express();
 app.use(json());
@@ -11,17 +18,17 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "../../client/dist")));
 
 interface User {
-	name: string;
-	about: string;
-	avatar: string;
-	id: string;
+  name: string;
+  about: string;
+  avatar: string;
+  id: string;
 }
 
 const filePath: string = path.join(__dirname, "../data/pokemons.json");
 const pokemons: User[] = JSON.parse(fs.readFileSync(filePath, "utf8"));
 
 app.get("/pokemons", (req: Request, res: Response) => {
-	res.status(200).send(pokemons);
+  res.status(200).send(pokemons);
 });
 
 app.listen(app.listen(process.env.PORT || 3000));
