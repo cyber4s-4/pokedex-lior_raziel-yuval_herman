@@ -14,7 +14,7 @@ gulp.task("start", () => {
 });
 
 // Creates js bundle from several js files
-gulp.task("build", () => {
+gulp.task("pack", () => {
 	return webpack(webpackConfig).pipe(gulp.dest("./dist"));
 });
 
@@ -83,20 +83,16 @@ gulp.task("tsc-w", () => {
 	exec("tsc -w");
 });
 
-gulp.task("fullbuild",
-	gulp.series(
-	"start",
-	"scss",
-	"index",
-	"media",
-	"tsc",
-	"build"))
+gulp.task(
+	"build",
+	gulp.series("start", "scss", "index", "media", "tsc", "pack")
+);
 
 // Run all together
 gulp.task(
 	"default",
 	gulp.series(
-		"fullbuild",
+		"build",
 		gulp.parallel(
 			"browser-sync",
 			"browser-sync-watch",
