@@ -1,7 +1,7 @@
 import express from "express";
 import { Request, Response } from "express";
 import { json } from "body-parser";
-import { cluster, password, UID, username } from "./superSecret";
+const { cluster, password, UID, username } = require("superSecret.ts");
 import { MongoClient } from "mongodb";
 import fs from "fs";
 import path from "path";
