@@ -40,5 +40,5 @@ async function startServer() {
 	Object.freeze(pokedexDb);
 	Object.freeze(pokemonsCollection);
 	app.listen(process.env.PORT || 3000);
-	console.log("listening on " + process.env.PORT || 3000);
+	console.log("listening on " + (process.env.PORT || 3000));
 }
