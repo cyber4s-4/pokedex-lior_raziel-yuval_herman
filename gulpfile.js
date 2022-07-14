@@ -2,11 +2,13 @@ const gulp = require("gulp");
 const { execSync, exec } = require("child_process");
 
 gulp.task("client", () => {
+	execSync("npx gulp -f client/gulpfile.js build");
 	return gulp
 		.src("./client/dist/**/*")
 		.pipe(gulp.dest("./deploy/client/dist"));
 });
 gulp.task("server", () => {
+	execSync("npx tsc -p server/tsconfig.json");
 	return gulp
 		.src("./server/dist/**/*")
 		.pipe(gulp.dest("./deploy/server/dist"));
