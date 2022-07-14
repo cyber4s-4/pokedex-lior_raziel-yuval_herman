@@ -2,7 +2,6 @@
 	"name": "gulp_typescript",
 	"scripts": {
 		"start": "echo run \\'npm run client\\' to run client or \\'npm run server\\' to run the server",
-		"postinstall": "npm run build",
 		"client": "gulp -f client/gulpfile.js",
 		"server": "tsc -p server/tsconfig.json && node server/dist/server.js",
 		"updateDatabase": "node server/updateDatabase.js",
