@@ -1,16 +1,15 @@
 import express from "express";
 import { Request, Response } from "express";
 import { json } from "body-parser";
-const { cluster, password, UID, username } = require("superSecret.ts");
-import { MongoClient } from "mongodb";
-import fs from "fs";
+import { Collection, Db, MongoClient } from "mongodb";
 import path from "path";
 import cors from "cors";
+const { cluster, password, UID, username } = require("./superSecret.ts");
 
-const uri = `mongodb+srv://${username}:${password}@${cluster}.${UID}.mongodb.net/?retryWrites=true&w=majority`;
-const client = new MongoClient(uri);
-client.connect();
+let pokedexDb: Db;
+let pokemonsCollection: Collection;
 
+startServer();
 const app = express();
 app.use(json());
 app.use(cors());
@@ -23,12 +22,23 @@ interface User {
 	id: string;
 }
 
-const filePath: string = path.join(__dirname, "../data/pokemons.json");
-const pokemons: User[] = JSON.parse(fs.readFileSync(filePath, "utf8"));
-
 app.get("/pokemons", (req: Request, res: Response) => {
-	res.status(200).send(pokemons);
+	pokemonsCollection
+		.find()
+		.toArray()
+		.then((pokemonArr) => {
+			res.status(200).send(JSON.stringify(pokemonArr));
+		});
 });
 
-app.listen(app.listen(process.env.PORT || 3000));
-console.log("listening on " + process.env.PORT || 3000);
+async function startServer() {
+	const uri = `mongodb+srv://${username}:${password}@${cluster}.${UID}.mongodb.net/?retryWrites=true&w=majority`;
+	const client = new MongoClient(uri);
+	await client.connect();
+	pokedexDb = client.db("pokedex");
+	pokemonsCollection = pokedexDb.collection("pokemons");
+	Object.freeze(pokedexDb);
+	Object.freeze(pokemonsCollection);
+	app.listen(app.listen(process.env.PORT || 3000));
+	console.log("listening on " + process.env.PORT || 3000);
+}
