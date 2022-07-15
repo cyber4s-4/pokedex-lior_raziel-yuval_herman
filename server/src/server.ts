@@ -40,14 +40,15 @@ app.get("/pokemons", (req: Request, res: Response) => {
 });
 
 let pokemonsNames: Document[] = [];
+let ongoingNameRequest: Promise<Document[]>;
 async function getPokemonNames() {
-	if (pokemonsNames.length) {
-		return pokemonsNames;
-	}
-	pokemonsNames = await pokemonsCollection
+	if (pokemonsNames.length) return pokemonsNames;
+	if (ongoingNameRequest) return ongoingNameRequest;
+	ongoingNameRequest = pokemonsCollection
 		.find()
 		.project({ name: 1 })
 		.toArray();
+	pokemonsNames = await ongoingNameRequest;
 	Object.freeze(pokemonsNames);
 	return pokemonsNames;
 }
