@@ -1,8 +1,7 @@
 import { Pokemon } from "./components/pokemon";
 
 const baseUrl =
-	(window.location.port === "4000" ? "http://localhost:3000/" : "/") +
-	"pokemons";
+	window.location.port === "4000" ? "http://localhost:3000/" : "/";
 
 let pokemonsNames: string[] = [];
 
@@ -15,18 +14,29 @@ export async function getPokemonComponents(
 	limit: number = Infinity
 ) {
 	const pokemonObjects = (await fetchJson(
-		baseUrl + `?limit=${limit}&offset=${offset}`
+		baseUrl + `pokemons?limit=${limit}&offset=${offset}`
 	)) as object[];
+	return convert2Component(pokemonObjects);
+}
+
+export async function getPokemonSearchComponents(query: string) {
+	const pokemonObjects = (await fetchJson(
+		baseUrl + `search/${query}`
+	)) as object[];
+	return convert2Component(pokemonObjects);
+}
+
+function convert2Component(pokemonObjects: object[]) {
 	const pokemonComponents = [];
 	for (const pokemon of pokemonObjects) {
 		pokemonComponents.push(new Pokemon(pokemon));
 	}
-	return pokemonComponents.slice(offset, limit + offset);
+	return pokemonComponents;
 }
 
 export async function getPokemonNames() {
 	if (!pokemonsNames.length) {
-		pokemonsNames = (await fetchJson(baseUrl)).map(
+		pokemonsNames = (await fetchJson(baseUrl + "pokemons")).map(
 			(doc: { _id: string; name: string }) => doc.name
 		);
 	}
