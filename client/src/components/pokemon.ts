@@ -55,7 +55,6 @@ export class Pokemon {
 	 * @returns HTMLElement
 	 */
 	#makeBackSideHTML(): HTMLElement {
-		const description = "";
 		const imgAltText = this.img ? `A ${this.name} image` : "No image found";
 
 		const containerDiv = document.createElement("div");
