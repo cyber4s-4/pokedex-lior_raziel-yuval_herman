@@ -1,4 +1,5 @@
 export class Pokemon {
+	id: string;
 	name: string;
 	img: string;
 	description: string;
@@ -8,8 +9,8 @@ export class Pokemon {
 	abilities: string[];
 	category: string;
 	weight: number;
-	constructor(pokemonData: any) {
-		// TODO make interface
+	constructor(pokemonData: any, id: string) {
+		this.id = id;
 		this.name = pokemonData.name;
 		this.img = pokemonData.image ?? "";
 		this.description = pokemonData.description;

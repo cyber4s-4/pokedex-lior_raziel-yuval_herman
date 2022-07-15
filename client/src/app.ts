@@ -21,16 +21,16 @@ function renderPromiseComponentList(
 ) {
 	if (removeOld) {
 		listParent.innerHTML = "";
-		currentShownPokemonNames.length = 0;
+		currentShownPokemonIds.length = 0;
 	}
 	for (const pokemon of pokemons) {
 		if (
-			currentShownPokemonNames.includes(pokemon.name) ||
+			currentShownPokemonIds.includes(pokemon.id) ||
 			(filterFromQuery && !pokemon.name.includes(searchInputElement.value))
 		)
 			return;
 		listParent.appendChild(pokemon.createHTML());
-		currentShownPokemonNames.push(pokemon.name);
+		currentShownPokemonIds.push(pokemon.id);
 	}
 }
 
@@ -47,7 +47,7 @@ function renderPokemonByQuery(searchQuery: string) {
 let showingSearch = false;
 const renderAmount = 15;
 const previousBatch = [0, renderAmount];
-const currentShownPokemonNames: string[] = [];
+const currentShownPokemonIds: string[] = [];
 const searchButtonElement = document.querySelector(
 	".search-button"
 ) as HTMLButtonElement;

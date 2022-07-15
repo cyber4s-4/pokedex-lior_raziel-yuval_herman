@@ -30,7 +30,9 @@ export async function searchPokemonComponents(query: string) {
 function convert2Component(pokemonObjects: object[]) {
 	const pokemonComponents = [];
 	for (const pokemon of pokemonObjects) {
-		pokemonComponents.push(new Pokemon(pokemon));
+		pokemonComponents.push(
+			new Pokemon(pokemon, (pokemon as { _id: string })._id)
+		);
 	}
 
 	return pokemonComponents;
