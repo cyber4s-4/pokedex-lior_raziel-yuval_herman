@@ -1,5 +1,5 @@
 import { Pokemon } from "./components/pokemon";
-import { getPokemonComponents } from "./pokemonApi";
+import { getPokemonComponents, getPokemonNames } from "./pokemonApi";
 
 /**
  * Renders Pokemon components as they arrive from the server.
@@ -68,15 +68,15 @@ searchButtonElement.addEventListener("click", () => {
 	renderPokemonByQuery(searchQuery);
 });
 
-searchInputElement.addEventListener("input", () => {
-	const searchQuery = searchInputElement.value;
-	if (!searchQuery.length) {
-		showingSearch = false;
-		return;
-	}
-	showingSearch = true;
-	renderPokemonByQuery(searchQuery);
-});
+// searchInputElement.addEventListener("input", () => {
+// 	const searchQuery = searchInputElement.value;
+// 	if (!searchQuery.length) {
+// 		showingSearch = false;
+// 		return;
+// 	}
+// 	showingSearch = true;
+// 	renderPokemonByQuery(searchQuery);
+// });
 
 searchInputElement.addEventListener("keydown", (e) => {
 	if (e.key === "Enter") searchButtonElement.click();
@@ -100,3 +100,15 @@ window.onscroll = () => {
 		);
 	}
 };
+
+getPokemonNames().then((pokemonNames) => {
+	const dataListElement = document.querySelector(
+		"#pokemon-names"
+	) as HTMLElement;
+	const pokemonUniqueNames = [...new Set(pokemonNames)];
+	for (const pokemon of pokemonUniqueNames) {
+		const optionElement = document.createElement("option");
+		optionElement.value = pokemon;
+		dataListElement.appendChild(optionElement);
+	}
+});
