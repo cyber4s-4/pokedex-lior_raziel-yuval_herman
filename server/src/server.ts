@@ -39,6 +39,18 @@ app.get("/pokemons", (req: Request, res: Response) => {
 	}
 });
 
+app.get("/search/:pokemonName", (req: Request, res: Response) => {
+	console.log(req.params.pokemonName);
+
+	pokemonsCollection
+		.find({ name: RegExp(req.params.pokemonName) })
+		.limit(50)
+		.toArray()
+		.then((pokemonArr) => {
+			res.status(200).json(pokemonArr);
+		});
+});
+
 let pokemonsNames: Document[] = [];
 let ongoingNameRequest: Promise<Document[]>;
 async function getPokemonNames() {
