@@ -93,7 +93,7 @@ function combinepoks(pokemon1, pokemon2) {
 		image: pokemon2.image,
 		description: pokemon1.description,
 		stats: pokemon2.stats,
-		color: pokemon1.colors,
+		color: pokemon1.color,
 		height: pokemon2.height,
 		abilities: pokemon1.abilities,
 		category: pokemon2.category,
