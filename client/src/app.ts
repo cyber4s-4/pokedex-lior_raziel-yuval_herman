@@ -1,5 +1,9 @@
 import { Pokemon } from "./components/pokemon";
-import { getPokemonComponents, getPokemonNames } from "./pokemonApi";
+import {
+	getPokemonComponents,
+	getPokemonNames,
+	searchPokemonComponents,
+} from "./pokemonApi";
 
 /**
  * Renders Pokemon components as they arrive from the server.
@@ -31,9 +35,9 @@ function renderPromiseComponentList(
 }
 
 function renderPokemonByQuery(searchQuery: string) {
-	getPokemonComponents().then((pokemonList) => {
+	searchPokemonComponents(searchQuery).then((pokemonList) => {
 		renderPromiseComponentList(
-			pokemonList.filter((pokemon) => pokemon.name.includes(searchQuery)),
+			pokemonList,
 			document.getElementsByClassName("pokemon-list")[0] as HTMLElement,
 			true
 		);

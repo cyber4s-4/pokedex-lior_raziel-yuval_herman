@@ -19,10 +19,11 @@ export async function getPokemonComponents(
 	return convert2Component(pokemonObjects);
 }
 
-export async function getPokemonSearchComponents(query: string) {
+export async function searchPokemonComponents(query: string) {
 	const pokemonObjects = (await fetchJson(
 		baseUrl + `search/${query}`
 	)) as object[];
+
 	return convert2Component(pokemonObjects);
 }
 
@@ -31,6 +32,7 @@ function convert2Component(pokemonObjects: object[]) {
 	for (const pokemon of pokemonObjects) {
 		pokemonComponents.push(new Pokemon(pokemon));
 	}
+
 	return pokemonComponents;
 }
 
