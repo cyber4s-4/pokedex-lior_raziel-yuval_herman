@@ -68,7 +68,7 @@ gulp.task("watch-media", () => {
 
 // Watch tsc files
 gulp.task("watch-tsc", () => {
-	return gulp.watch("./dist/tsc/**/*.js", gulp.series("build"));
+	return gulp.watch("./dist/tsc/**/*.js", gulp.series("pack"));
 });
 
 // Initial ts compile
