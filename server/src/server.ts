@@ -16,29 +16,37 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, "../../client/dist")));
 
 interface User {
-	name: string;
-	about: string;
-	avatar: string;
-	id: string;
+  name: string;
+  about: string;
+  avatar: string;
+  id: string;
 }
 
 app.get("/pokemons", (req: Request, res: Response) => {
-	pokemonsCollection
-		.find()
-		.toArray()
-		.then((pokemonArr) => {
-			res.status(200).send(JSON.stringify(pokemonArr));
-		});
+  if (!("limit" in req.query) || !("offset" in req.query)) {
+    res.status(422).send({
+      msg: "missing required query parameters 'limit' or 'offset'",
+    });
+  } else {
+    pokemonsCollection
+      .find()
+      .skip(Number(req.query.offset))
+      .limit(Number(req.query.limit))
+      .toArray()
+      .then((pokemonArr) => {
+        res.status(200).send(JSON.stringify(pokemonArr));
+      });
+  }
 });
 
 async function startServer() {
-	const uri = `mongodb+srv://${username}:${password}@${cluster}.${UID}.mongodb.net/?retryWrites=true&w=majority`;
-	const client = new MongoClient(uri);
-	await client.connect();
-	pokedexDb = client.db("pokedex");
-	pokemonsCollection = pokedexDb.collection("pokemons");
-	Object.freeze(pokedexDb);
-	Object.freeze(pokemonsCollection);
-	app.listen(process.env.PORT || 3000);
-	console.log("listening on " + (process.env.PORT || 3000));
+  const uri = `mongodb+srv://${username}:${password}@${cluster}.${UID}.mongodb.net/?retryWrites=true&w=majority`;
+  const client = new MongoClient(uri);
+  await client.connect();
+  pokedexDb = client.db("pokedex");
+  pokemonsCollection = pokedexDb.collection("pokemons");
+  Object.freeze(pokedexDb);
+  Object.freeze(pokemonsCollection);
+  app.listen(process.env.PORT || 3000);
+  console.log("listening on " + (process.env.PORT || 3000));
 }
