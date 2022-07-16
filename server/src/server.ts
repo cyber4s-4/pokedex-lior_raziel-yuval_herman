@@ -43,6 +43,7 @@ async function decompressPokemons(pokemons: any) {
 		);
 
 		decompressedPokemons.push({
+			_id: pokemon._id,
 			name: pokemon.name,
 			image: uncompressedData.image,
 			description: uncompressedData.description,
