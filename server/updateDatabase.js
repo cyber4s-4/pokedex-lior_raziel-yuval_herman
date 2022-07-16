@@ -15,7 +15,8 @@ function resolveImage(spritesObj) {
 	return (
 		spritesObj.other.dream_world.front_default ||
 		spritesObj.other["official-artwork"].front_default ||
-		spritesObj.front_default
+		spritesObj.front_default ||
+		""
 	).slice(72);
 }
 
@@ -46,7 +47,10 @@ async function fetchPokemon(url) {
 			weight: pokemonData.weight,
 		};
 	} catch (error) {
-		console.log("failed " + url);
+		console.log("failed " + url + "\ncheck error.log for more details");
+		fs.writeFileSync("error.log", JSON.stringify(error.response), {
+			flag: "a",
+		});
 	}
 }
 
