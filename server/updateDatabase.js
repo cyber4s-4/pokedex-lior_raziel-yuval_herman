@@ -16,7 +16,7 @@ function resolveImage(spritesObj) {
 		spritesObj.other.dream_world.front_default ||
 		spritesObj.other["official-artwork"].front_default ||
 		spritesObj.front_default
-	);
+	).slice(72);
 }
 
 async function fetchPokemon(url) {
@@ -32,7 +32,13 @@ async function fetchPokemon(url) {
 			description: species.flavor_text_entries.find(
 				(element) => element.language.name === "en"
 			).flavor_text,
-			stats: stats,
+			stats: stats.map((stat) => {
+				return {
+					base_stat: stat.base_stat,
+					effort: stat.effort,
+					name: stat.stat.name,
+				};
+			}),
 			color: species.color.name,
 			height: pokemonData.height,
 			abilities: pokemonData.abilities.map((e) => e.ability.name),
@@ -44,15 +50,13 @@ async function fetchPokemon(url) {
 	}
 }
 
-function saveToJSONFile(data) {
-	fs.writeFileSync("server/data/pokemons.json", JSON.stringify(data));
-}
-
 async function main() {
 	const client = new MongoClient(uri);
+	console.log("connecting to database...");
 	await client.connect();
 	const pokedexDb = client.db("pokedex");
 	const pokemonsCollection = pokedexDb.collection("pokemons");
+	console.log("deleting pokemons");
 	await pokemonsCollection.deleteMany({});
 	const pokemonArray = [];
 	async function fetchPokemonArr(serverResult) {
@@ -78,14 +82,16 @@ async function main() {
 				pokemonArray.push(combinepoks(pokemonArray[i], pokemonArray[j]));
 			}
 		}
+		console.log(
+			"last downloaded pokemon:\n" +
+				JSON.stringify(pokemonArray.at(-1), undefined, 3)
+		);
 		await pokemonsCollection.insertMany(pokemonArray);
 		client.close();
 	}
 
 	fetchJson("https://pokeapi.co/api/v2/pokemon/").then(fetchPokemonArr);
 }
-
-main();
 
 function combinepoks(pokemon1, pokemon2) {
 	return {
@@ -100,3 +106,5 @@ function combinepoks(pokemon1, pokemon2) {
 		weight: pokemon1.weight,
 	};
 }
+
+main();
