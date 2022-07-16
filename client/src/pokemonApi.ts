@@ -1,5 +1,22 @@
 import { Pokemon } from "./components/pokemon";
 
+interface pokemonObject {
+	_id: string;
+	name: string;
+	image: string;
+	description: string;
+	stats: {
+		base_stat: number;
+		effort: number;
+		name: string;
+	}[];
+	color: string;
+	height: number;
+	abilities: string[];
+	category: string;
+	weight: number;
+}
+
 const baseUrl =
 	window.location.port === "4000" ? "http://localhost:3000/" : "/";
 
@@ -15,24 +32,25 @@ export async function getPokemonComponents(
 ) {
 	const pokemonObjects = (await fetchJson(
 		baseUrl + `pokemons?limit=${limit}&offset=${offset}`
-	)) as object[];
+	)) as pokemonObject[];
 	return convert2Component(pokemonObjects);
 }
 
 export async function searchPokemonComponents(query: string) {
 	const pokemonObjects = (await fetchJson(
 		baseUrl + `search/${query}`
-	)) as object[];
+	)) as pokemonObject[];
 
 	return convert2Component(pokemonObjects);
 }
 
-function convert2Component(pokemonObjects: object[]) {
+function convert2Component(pokemonObjects: pokemonObject[]) {
 	const pokemonComponents = [];
 	for (const pokemon of pokemonObjects) {
-		pokemonComponents.push(
-			new Pokemon(pokemon, (pokemon as { _id: string })._id)
-		);
+		pokemon.image =
+			"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon" +
+			pokemon.image;
+		pokemonComponents.push(new Pokemon(pokemon, pokemon._id));
 	}
 
 	return pokemonComponents;

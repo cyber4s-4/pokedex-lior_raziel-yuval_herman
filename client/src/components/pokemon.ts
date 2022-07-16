@@ -33,7 +33,7 @@ export class Pokemon {
 		const imgAltText = this.img ? `A ${this.name} image` : "No image found";
 		// Add a P element for every stat
 		const stats = this.stats.map((element: any) => {
-			return `<p><strong>${element.stat.name}</strong> is ${element.base_stat} at ${element.effort} effort</p>`;
+			return `<p><strong>${element.name}</strong> is ${element.base_stat} at ${element.effort} effort</p>`;
 		});
 
 		const containerDiv = document.createElement("div");
