@@ -1,7 +1,11 @@
 const axios = require("axios").default;
 const fs = require("fs");
+const { inspect } = require("util");
 const { MongoClient } = require("mongodb");
 const { cluster, password, UID, username } = require("./src/superSecret.ts");
+const { deflate } = require("node:zlib");
+const { promisify } = require("node:util");
+const deflate_promise = promisify(deflate);
 const uri = `mongodb+srv://${username}:${password}@${cluster}.${UID}.mongodb.net/?retryWrites=true&w=majority`;
 
 // fetch all pokemon data into pokemon object array and save as json file.
@@ -9,6 +13,10 @@ async function fetchJson(url) {
 	return await (
 		await axios.get(url)
 	).data;
+}
+
+function saveToJSONFile(data) {
+	fs.writeFileSync("server/data/pokemons.json", JSON.stringify(data));
 }
 
 function resolveImage(spritesObj) {
@@ -47,8 +55,8 @@ async function fetchPokemon(url) {
 			weight: pokemonData.weight,
 		};
 	} catch (error) {
-		console.log("failed " + url + "\ncheck error.log for more details");
-		fs.writeFileSync("error.log", JSON.stringify(error.response), {
+		console.log("failed " + url + "\ncheck 'error.log' for more details");
+		fs.writeFileSync("error.log", JSON.stringify(inspect(error)), {
 			flag: "a",
 		});
 	}
@@ -75,10 +83,11 @@ async function main() {
 			}
 		}
 		pokemonArray.push(...(await Promise.all(fetchPromises)));
-		if (next) {
+		if (!next) {
 			fetchJson(next).then(fetchPokemonArr);
 			return;
 		}
+		console.log("combining pokes...");
 		const pokLength = pokemonArray.length;
 		for (let i = 0; i < pokLength; i++) {
 			for (let j = 0; j < pokLength; j++) {
@@ -86,11 +95,21 @@ async function main() {
 				pokemonArray.push(combinepoks(pokemonArray[i], pokemonArray[j]));
 			}
 		}
-		console.log(
-			"last downloaded pokemon:\n" +
-				JSON.stringify(pokemonArray.at(-1), undefined, 3)
-		);
-		await pokemonsCollection.insertMany(pokemonArray);
+		console.log("compressing pokemons...");
+		for (let i = 0; i < pokemonArray.length; i++) {
+			pokemonArray[i] = await compressPokemon(pokemonArray[i]);
+		}
+		try {
+			await pokemonsCollection.insertMany(pokemonArray);
+		} catch (error) {
+			console.log(
+				"failed to upload databse to mongo\ncheck 'error.log' for more details"
+			);
+			fs.writeFileSync("error.log", JSON.stringify(inspect(error)), {
+				flag: "a",
+			});
+			saveToJSONFile(pokemonArray);
+		}
 		client.close();
 	}
 
@@ -108,6 +127,26 @@ function combinepoks(pokemon1, pokemon2) {
 		abilities: pokemon1.abilities,
 		category: pokemon2.category,
 		weight: pokemon1.weight,
+	};
+}
+
+async function compressPokemon(pokemon) {
+	return {
+		name: pokemon.name,
+		compressedData: (
+			await deflate_promise(
+				JSON.stringify({
+					image: pokemon.image,
+					description: pokemon.description,
+					stats: pokemon.stats,
+					color: pokemon.color,
+					height: pokemon.height,
+					abilities: pokemon.abilities,
+					category: pokemon.category,
+					weight: pokemon.weight,
+				})
+			)
+		).toString("base64"),
 	};
 }
 

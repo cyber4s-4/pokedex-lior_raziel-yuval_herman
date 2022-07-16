@@ -3,6 +3,9 @@ import { Request, Response } from "express";
 import { json } from "body-parser";
 import cors from "cors";
 import path from "path";
+import { inflate } from "node:zlib";
+const { promisify } = require("node:util");
+const inflate_promise = promisify(inflate);
 import { Collection, Db, Document, MongoClient } from "mongodb";
 let cluster: string, password: string, UID: string, username: string;
 try {
@@ -30,6 +33,30 @@ interface User {
 	id: string;
 }
 
+async function decompressPokemons(pokemons: any) {
+	const decompressedPokemons = [];
+	for (const pokemon of pokemons) {
+		const uncompressedData = JSON.parse(
+			(
+				await inflate_promise(Buffer.from(pokemon.compressedData, "base64"))
+			).toString()
+		);
+
+		decompressedPokemons.push({
+			name: pokemon.name,
+			image: uncompressedData.image,
+			description: uncompressedData.description,
+			stats: uncompressedData.stats,
+			color: uncompressedData.color,
+			height: uncompressedData.height,
+			abilities: uncompressedData.abilities,
+			category: uncompressedData.category,
+			weight: uncompressedData.weight,
+		});
+	}
+	return decompressedPokemons;
+}
+
 app.get("/pokemons", (req: Request, res: Response) => {
 	if (!("limit" in req.query) && !("offset" in req.query)) {
 		getPokemonNames().then((pokemonArr) => {
@@ -42,7 +69,9 @@ app.get("/pokemons", (req: Request, res: Response) => {
 			.limit(Number(req.query.limit))
 			.toArray()
 			.then((pokemonArr) => {
-				res.status(200).json(pokemonArr);
+				decompressPokemons(pokemonArr).then((pokemons) =>
+					res.status(200).json(pokemons)
+				);
 			});
 	}
 });
@@ -55,7 +84,9 @@ app.get("/search/:pokemonName", (req: Request, res: Response) => {
 		.limit(50)
 		.toArray()
 		.then((pokemonArr) => {
-			res.status(200).json(pokemonArr);
+			decompressPokemons(pokemonArr).then((pokemons) =>
+				res.status(200).json(pokemons)
+			);
 		});
 });
 
