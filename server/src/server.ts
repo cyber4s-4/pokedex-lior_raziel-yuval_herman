@@ -1,10 +1,18 @@
 import express from "express";
 import { Request, Response } from "express";
 import { json } from "body-parser";
-import { Collection, Db, Document, MongoClient } from "mongodb";
-import path from "path";
 import cors from "cors";
-const { cluster, password, UID, username } = require("./superSecret");
+import path from "path";
+import { Collection, Db, Document, MongoClient } from "mongodb";
+let cluster: string, password: string, UID: string, username: string;
+try {
+	({ cluster, password, UID, username } = require("./superSecret"));
+} catch {
+	username = "testuser";
+	password = encodeURI("+24813462481346");
+	cluster = "cluster0";
+	UID = "ddxnye8";
+}
 
 let pokedexDb: Db;
 let pokemonsCollection: Collection;
