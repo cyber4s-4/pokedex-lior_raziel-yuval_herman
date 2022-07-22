@@ -83,7 +83,7 @@ async function main() {
 			}
 		}
 		pokemonArray.push(...(await Promise.all(fetchPromises)));
-		if (!next) {
+		if (next) {
 			fetchJson(next).then(fetchPokemonArr);
 			return;
 		}
