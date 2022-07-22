@@ -66,6 +66,7 @@ async function main() {
 	console.log("deleting pokemons");
 	await client.query("DROP TABLE IF EXISTS pokemon");
 	await client.query(`CREATE TABLE pokemon (
+		_id SERIAL PRIMARY KEY,
 		name TEXT,
 		compressedData TEXT
 	 );`);
@@ -101,7 +102,10 @@ async function main() {
 		try {
 			console.log("uploading...");
 			for (pokemon of pokemonArray) {
-				await client.query(`INSERT INTO pokemon VALUES ($1,$2)`, pokemon);
+				await client.query(
+					`INSERT INTO pokemon (name, compressedData) VALUES ($1,$2)`,
+					pokemon
+				);
 			}
 		} catch (error) {
 			console.log(error);
