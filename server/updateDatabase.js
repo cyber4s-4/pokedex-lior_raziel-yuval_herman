@@ -1,12 +1,10 @@
 const axios = require("axios").default;
 const fs = require("fs");
 const { inspect } = require("util");
-const { MongoClient } = require("mongodb");
-const { cluster, password, UID, username } = require("./src/superSecret.ts");
 const { deflate } = require("node:zlib");
 const { promisify } = require("node:util");
 const deflate_promise = promisify(deflate);
-const uri = `mongodb+srv://${username}:${password}@${cluster}.${UID}.mongodb.net/?retryWrites=true&w=majority`;
+const Client = require("pg").Client;
 
 // fetch all pokemon data into pokemon object array and save as json file.
 async function fetchJson(url) {
@@ -16,7 +14,7 @@ async function fetchJson(url) {
 }
 
 function saveToJSONFile(data) {
-	fs.writeFileSync("server/data/pokemons.json", JSON.stringify(data));
+	fs.writeFileSync("data/pokemons.json", JSON.stringify(data));
 }
 
 function resolveImage(spritesObj) {
@@ -63,13 +61,14 @@ async function fetchPokemon(url) {
 }
 
 async function main() {
-	const client = new MongoClient(uri);
 	console.log("connecting to database...");
 	await client.connect();
-	const pokedexDb = client.db("pokedex");
-	const pokemonsCollection = pokedexDb.collection("pokemons");
 	console.log("deleting pokemons");
-	await pokemonsCollection.deleteMany({});
+	await client.query("DROP TABLE IF EXISTS pokemon");
+	await client.query(`CREATE TABLE pokemon (
+		name TEXT,
+		compressedData TEXT
+	 );`);
 	const pokemonArray = [];
 	async function fetchPokemonArr(serverResult) {
 		const { results, next } = serverResult;
@@ -83,7 +82,7 @@ async function main() {
 			}
 		}
 		pokemonArray.push(...(await Promise.all(fetchPromises)));
-		if (next) {
+		if (!next) {
 			fetchJson(next).then(fetchPokemonArr);
 			return;
 		}
@@ -100,17 +99,15 @@ async function main() {
 			pokemonArray[i] = await compressPokemon(pokemonArray[i]);
 		}
 		try {
-			await pokemonsCollection.insertMany(pokemonArray);
+			console.log("uploading...");
+			for (pokemon of pokemonArray) {
+				await client.query(`INSERT INTO pokemon VALUES ($1,$2)`, pokemon);
+			}
 		} catch (error) {
-			console.log(
-				"failed to upload databse to mongo\ncheck 'error.log' for more details"
-			);
-			fs.writeFileSync("error.log", JSON.stringify(inspect(error)), {
-				flag: "a",
-			});
+			console.log(error);
 			saveToJSONFile(pokemonArray);
 		}
-		client.close();
+		client.end();
 	}
 
 	fetchJson("https://pokeapi.co/api/v2/pokemon/").then(fetchPokemonArr);
@@ -131,9 +128,9 @@ function combinepoks(pokemon1, pokemon2) {
 }
 
 async function compressPokemon(pokemon) {
-	return {
-		name: pokemon.name,
-		compressedData: (
+	return [
+		pokemon.name,
+		(
 			await deflate_promise(
 				JSON.stringify({
 					image: pokemon.image,
@@ -147,7 +144,15 @@ async function compressPokemon(pokemon) {
 				})
 			)
 		).toString("base64"),
-	};
+	];
 }
+
+const client = new Client({
+	connectionString:
+		"postgres://hztyuidzruugcd:20cf48c8362d7f6978d05b28e1c98d78dea7f719f00656acbce56e0de4ca68a2@ec2-34-235-198-25.compute-1.amazonaws.com:5432/dbkv62fjl5db8d",
+	ssl: {
+		rejectUnauthorized: false,
+	},
+});
 
 main();
