@@ -13,11 +13,6 @@ gulp.task("server", () => {
 		.src("./server/dist/**/*")
 		.pipe(gulp.dest("./deploy/server/dist"));
 });
-gulp.task("server-data", () => {
-	return gulp
-		.src("./server/data/**/*")
-		.pipe(gulp.dest("./deploy/server/data"));
-});
 gulp.task("config-files", () => {
 	return gulp.src(["package*.json"]).pipe(gulp.dest("./deploy/"));
 });
@@ -31,17 +26,15 @@ gulp.task("setup-heroku", () => {
 		return;
 	}
 	execSync("cd deploy && git add -A");
-	execSync('cd deploy && git commit -m "herko-deploy"');
+	try {
+		execSync('cd deploy && git commit -m "herko-deploy"');
+	} catch {
+		console.log("nothing new");
+	}
 	return exec("cd deploy && git push heroku master ");
 });
 
 gulp.task(
 	"default",
-	gulp.series(
-		"client",
-		"server",
-		"server-data",
-		"config-files",
-		"setup-heroku"
-	)
+	gulp.series("client", "server", "config-files", "setup-heroku")
 );
