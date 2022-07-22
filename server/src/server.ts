@@ -31,6 +31,7 @@ interface User {
 
 async function decompressPokemons(pokemons: any) {
 	const decompressedPokemons = [];
+
 	for (const pokemon of pokemons) {
 		const uncompressedData = JSON.parse(
 			(
@@ -77,8 +78,8 @@ app.get("/search/:pokemonName", (req: Request, res: Response) => {
 	console.log(req.params.pokemonName);
 
 	client
-		.query("SELECT * FROM pokemon LIMIT 50 where name LIKE $1%", [
-			req.params.pokemonName,
+		.query("SELECT * FROM pokemon WHERE name LIKE $1 LIMIT 50;", [
+			`${req.params.pokemonName}%`,
 		])
 		.then(({ rows }) => {
 			decompressPokemons(rows).then((pokemons) =>
