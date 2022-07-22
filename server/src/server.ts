@@ -10,6 +10,7 @@ import { Client, QueryResult } from "pg";
 
 const client = new Client({
 	connectionString:
+		process.env.DATABASE_URL ||
 		"postgres://hztyuidzruugcd:20cf48c8362d7f6978d05b28e1c98d78dea7f719f00656acbce56e0de4ca68a2@ec2-34-235-198-25.compute-1.amazonaws.com:5432/dbkv62fjl5db8d",
 	ssl: {
 		rejectUnauthorized: false,
