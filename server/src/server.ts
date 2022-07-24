@@ -3,33 +3,22 @@ import { Request, Response } from "express";
 import { json } from "body-parser";
 import cors from "cors";
 import path from "path";
+import { Database } from "./database";
 import { inflate } from "node:zlib";
-const { promisify } = require("node:util");
+import { promisify } from "node:util";
 const inflate_promise = promisify(inflate);
-import { Client, QueryResult } from "pg";
 
-const client = new Client({
-	connectionString:
-		process.env.DATABASE_URL ||
-		"postgres://hztyuidzruugcd:20cf48c8362d7f6978d05b28e1c98d78dea7f719f00656acbce56e0de4ca68a2@ec2-34-235-198-25.compute-1.amazonaws.com:5432/dbkv62fjl5db8d",
-	ssl: {
-		rejectUnauthorized: false,
-	},
-});
-
-startServer();
 const app = express();
 app.use(json());
 app.use(cors());
 app.use(express.static(path.join(__dirname, "../../client/dist")));
 
-interface User {
-	name: string;
-	about: string;
-	avatar: string;
-	id: string;
-}
+const database = new Database(
+	process.env.DATABASE_URL ||
+		"postgres://hztyuidzruugcd:20cf48c8362d7f6978d05b28e1c98d78dea7f719f00656acbce56e0de4ca68a2@ec2-34-235-198-25.compute-1.amazonaws.com:5432/dbkv62fjl5db8d"
+);
 
+startServer();
 async function decompressPokemons(pokemons: any) {
 	const decompressedPokemons = [];
 
@@ -58,16 +47,16 @@ async function decompressPokemons(pokemons: any) {
 
 app.get("/pokemons", (req: Request, res: Response) => {
 	if (!("limit" in req.query) && !("offset" in req.query)) {
-		getPokemonNames().then(({ rows }) => {
+		getPokemonNames().then((rows) => {
 			res.status(200).json(rows);
 		});
 	} else {
-		client
-			.query("SELECT * FROM pokemon LIMIT $1 OFFSET $2;", [
-				req.query.limit,
-				req.query.offset,
-			])
-			.then(({ rows }) => {
+		database
+			.getPokemons(
+				parseInt(req.query.limit as string),
+				parseInt(req.query.offset as string)
+			)
+			.then((rows) => {
 				decompressPokemons(rows).then((pokemons) =>
 					res.status(200).json(pokemons)
 				);
@@ -76,32 +65,26 @@ app.get("/pokemons", (req: Request, res: Response) => {
 });
 
 app.get("/search/:pokemonName", (req: Request, res: Response) => {
-	console.log(req.params.pokemonName);
-
-	client
-		.query("SELECT * FROM pokemon WHERE name LIKE $1 LIMIT 50;", [
-			`${req.params.pokemonName}%`,
-		])
-		.then(({ rows }) => {
-			decompressPokemons(rows).then((pokemons) =>
-				res.status(200).json(pokemons)
-			);
-		});
+	database.find50(req.params.pokemonName).then((rows) => {
+		decompressPokemons(rows).then((pokemons) =>
+			res.status(200).json(pokemons)
+		);
+	});
 });
 
-let pokemonsNames: QueryResult;
-let ongoingNameRequest: Promise<QueryResult>;
+let pokemonsNames: string[];
+let ongoingNameRequest: Promise<string[]>;
 async function getPokemonNames() {
-	if (pokemonsNames && pokemonsNames.rows.length) return pokemonsNames;
+	if (pokemonsNames && pokemonsNames.length) return pokemonsNames;
 	if (ongoingNameRequest) return ongoingNameRequest;
-	ongoingNameRequest = client.query("SELECT name FROM pokemon");
+	ongoingNameRequest = database.getPokemonNames();
 	pokemonsNames = await ongoingNameRequest;
 	Object.freeze(pokemonsNames);
 	return pokemonsNames;
 }
 
 async function startServer() {
-	await client.connect();
+	await database.connect();
 	getPokemonNames().then(() => console.log("all names downloaded"));
 	app.listen(process.env.PORT || 3000);
 	console.log("listening on " + (process.env.PORT || 3000));
